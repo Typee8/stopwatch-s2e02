@@ -5,16 +5,16 @@ class TasksManager extends React.Component {
   state = {
     taskName: "",
     tasks: [],
+    timer: {
+      seconds: 0,
+      minutes: 0,
+      hours: 0,
+    },
   };
 
   constructor(props) {
     super(props);
     this.serverAPI = new ServerAPI();
-    this.timer = {
-      seconds: 0,
-      minutes: 0,
-      hours: 0,
-    };
   }
 
   onClick = () => {
@@ -75,13 +75,14 @@ class TasksManager extends React.Component {
   }
 
   timerShowTime() {
-    this.timerStartCount();
     const [seconds, minutes, hours] = this.timerGetNormalizedUnits();
-    console.log(`${hours}:${minutes}:${seconds}`);
+    const time = `${hours}:${minutes}:${seconds}`;
+    
+    return <>{time}</>;
   }
 
   timerGetNormalizedUnits() {
-    const { seconds, minutes, hours } = this.timer;
+    const { seconds, minutes, hours } = this.state.timer;
     const timer = [seconds, minutes, hours].map((item) =>
       item.toString().padStart(2, "0")
     );
@@ -90,30 +91,31 @@ class TasksManager extends React.Component {
   }
 
   timerStartCount() {
-    let { seconds, minutes, hours } = this.timer;
+    let { seconds, minutes, hours } = this.state.timer;
     seconds++;
 
-    if (seconds === 60) {
+    if (seconds >= 60) {
       minutes++;
       seconds = 0;
     }
-    if (minutes === 60) {
+    if (minutes >= 60) {
       hours++;
       minutes = 0;
     }
 
-    this.timer = { seconds, minutes, hours };
+    const timer = { seconds, minutes, hours };
+    this.setState({timer});
   }
 
   handleTaskStartPause = (evt) => {
-    const intervalID = setInterval(this.timerShowTime.bind(this), 1000);
+    const intervalID = setInterval(this.timerStartCount.bind(this), 1000);
   };
 
   Task(item) {
     return (
-      <section>
+      <section id={item.id}>
         <header>
-          {item.name}, {item.time}
+          {item.name}, {this.timerShowTime()}
         </header>
         <footer>
           <button onClick={this.handleTaskStartPause}>start/pause</button>

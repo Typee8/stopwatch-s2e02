@@ -74,15 +74,19 @@ class TasksManager extends React.Component {
     );
   }
 
-  timerStart() {
+  timerShowTime() {
     this.timerStartCount();
-    let { seconds, minutes, hours } = this.timer;
-
-    hours = hours.toString().padStart(2, "0");
-    minutes = minutes.toString().padStart(2, "0");
-    seconds = seconds.toString().padStart(2, "0");
-    
+    const [seconds, minutes, hours] = this.timerGetNormalizedUnits();
     console.log(`${hours}:${minutes}:${seconds}`);
+  }
+
+  timerGetNormalizedUnits() {
+    const { seconds, minutes, hours } = this.timer;
+    const timer = [seconds, minutes, hours].map((item) =>
+      item.toString().padStart(2, "0")
+    );
+
+    return timer;
   }
 
   timerStartCount() {
@@ -102,7 +106,7 @@ class TasksManager extends React.Component {
   }
 
   handleTaskStartPause = (evt) => {
-    const intervalID = setInterval(this.timerStart.bind(this), 1000);
+    const intervalID = setInterval(this.timerShowTime.bind(this), 1000);
   };
 
   Task(item) {

@@ -15,6 +15,7 @@ class TasksManager extends React.Component {
   constructor(props) {
     super(props);
     this.serverAPI = new ServerAPI();
+    this.timeIntervals = [];
   }
 
   onClick = () => {
@@ -74,15 +75,19 @@ class TasksManager extends React.Component {
     );
   }
 
-  timerShowTime() {
-    const [seconds, minutes, hours] = this.timerGetNormalizedUnits();
+  timerShowTime(id) {
+    const [seconds, minutes, hours] = this.timerGetNormalizedUnits(id);
     const time = `${hours}:${minutes}:${seconds}`;
-    
+
     return <>{time}</>;
   }
 
-  timerGetNormalizedUnits() {
-    const { seconds, minutes, hours } = this.state.timer;
+  timerGetNormalizedUnits(id) {
+    const taskArray = this.state.tasks.filter((item) => item.id === id);
+    const task = taskArray[0];
+
+    const { seconds, minutes, hours } = task.time;
+
     const timer = [seconds, minutes, hours].map((item) =>
       item.toString().padStart(2, "0")
     );
@@ -90,8 +95,14 @@ class TasksManager extends React.Component {
     return timer;
   }
 
-  timerStartCount() {
-    let { seconds, minutes, hours } = this.state.timer;
+  timerStartCount(evt) {
+    console.log("timerStartCount");
+    const targetID = evt.target.parentElement.parentElement.id;
+    const { tasks } = this.state;
+    const copyTasks = tasks.map((item) => item);
+    const targetTask = copyTasks.filter((item) => item.id === targetID);
+
+    let { seconds, minutes, hours } = targetTask[0].time;
     seconds++;
 
     if (seconds >= 60) {
@@ -103,19 +114,47 @@ class TasksManager extends React.Component {
       minutes = 0;
     }
 
-    const timer = { seconds, minutes, hours };
-    this.setState({timer});
+    copyTasks.forEach((item) => {
+      if (item.id === targetID) {
+        item.time = { seconds, minutes, hours };
+      }
+    });
+
+    this.setState({ tasks: copyTasks });
   }
 
   handleTaskStartPause = (evt) => {
-    const intervalID = setInterval(this.timerStartCount.bind(this), 1000);
+    const taskID = evt.target.parentElement.parentElement.id;
+
+    const isIntervalSet = this.timeIntervals.some(
+      (item) => item.taskID && item.taskID === taskID
+    );
+
+    if (isIntervalSet) {
+      const setTimeIntervals = this.timeIntervals.filter((item) => {
+        if (item.taskID === taskID) {
+          clearInterval(item.intervalID);
+        } else {
+          return item;
+        }
+      });
+      this.timeIntervals = setTimeIntervals;
+      console.log(this.timeIntervals);
+    } else {
+      const intervalID = setInterval(
+        this.timerStartCount.bind(this, evt),
+        1000
+      );
+
+      this.timeIntervals.push({ intervalID, taskID });
+    }
   };
 
   Task(item) {
     return (
       <section id={item.id}>
         <header>
-          {item.name}, {this.timerShowTime()}
+          {item.name}, {this.timerShowTime(item.id)}
         </header>
         <footer>
           <button onClick={this.handleTaskStartPause}>start/pause</button>

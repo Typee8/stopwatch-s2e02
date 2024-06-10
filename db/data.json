@@ -2,7 +2,11 @@
   "data": [
     {
       "name": "New task",
-      "time": "00:00:00",
+      "time": {
+        "seconds": 0,
+        "minutes": 0,
+        "hours": 0
+      },
       "isRunning": false,
       "isDone": false,
       "isRemoved": false,
@@ -10,7 +14,11 @@
     },
     {
       "name": "Another task",
-      "time": "00:00:00",
+      "time": {
+        "seconds": 0,
+        "minutes": 0,
+        "hours": 0
+      },
       "isRunning": false,
       "isDone": false,
       "isRemoved": false,

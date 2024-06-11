@@ -35,6 +35,25 @@ class ServerAPI {
     }
   }
 
+  async putData(id, obj) {
+    const options = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(obj)
+    };
+
+    const response = await fetch(`${this.url}/${id}`, options);
+
+    if (response.ok) {
+      console.log("PUT - successful");
+    } else {
+      throw new Error(`PUT - failed, status: ${response.status}`)
+    }
+
+  }
+
   eachIDtoString(response) {
     const processedResponse = response.map((item) => {
       if (item.id) {

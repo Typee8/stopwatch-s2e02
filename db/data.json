@@ -1,9 +1,9 @@
 {
   "data": [
     {
-      "name": "New task",
+      "name": "New Task",
       "time": {
-        "seconds": 0,
+        "seconds": 28,
         "minutes": 0,
         "hours": 0
       },
@@ -13,9 +13,9 @@
       "id": 1
     },
     {
-      "name": "Another task",
+      "name": "2nd task",
       "time": {
-        "seconds": 0,
+        "seconds": 14,
         "minutes": 0,
         "hours": 0
       },

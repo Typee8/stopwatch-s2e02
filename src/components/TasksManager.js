@@ -5,11 +5,6 @@ class TasksManager extends React.Component {
   state = {
     taskName: "",
     tasks: [],
-    timer: {
-      seconds: 0,
-      minutes: 0,
-      hours: 0,
-    },
   };
 
   constructor(props) {
@@ -20,7 +15,6 @@ class TasksManager extends React.Component {
 
   onClick = () => {
     const { tasks } = this.state;
-    console.log(tasks);
   };
 
   putInputToState = (evt) => {
@@ -35,7 +29,11 @@ class TasksManager extends React.Component {
 
     const task = {
       name: taskName,
-      time: "00:00:00",
+      time: {
+        seconds: 0,
+        minutes: 0,
+        hours: 0,
+      },
       isRunning: false,
       isDone: false,
       isRemoved: false,
@@ -96,7 +94,6 @@ class TasksManager extends React.Component {
   }
 
   timerStartCount(evt) {
-    console.log("timerStartCount");
     const targetID = evt.target.parentElement.parentElement.id;
     const { tasks } = this.state;
     const copyTasks = tasks.map((item) => item);
@@ -134,12 +131,15 @@ class TasksManager extends React.Component {
       const setTimeIntervals = this.timeIntervals.filter((item) => {
         if (item.taskID === taskID) {
           clearInterval(item.intervalID);
+          
+          const {tasks} = this.state;
+          const selectedTask = tasks.filter(item => item.id === taskID);
+          this.serverAPI.putData(taskID, selectedTask[0]);
         } else {
           return item;
         }
       });
       this.timeIntervals = setTimeIntervals;
-      console.log(this.timeIntervals);
     } else {
       const intervalID = setInterval(
         this.timerStartCount.bind(this, evt),

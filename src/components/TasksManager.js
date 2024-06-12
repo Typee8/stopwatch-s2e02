@@ -160,6 +160,7 @@ class TasksManager extends React.Component {
     const [isRunning] = tasks
       .filter((item) => item.id === taskID)
       .map((item) => item.isRunning);
+      console.log(isRunning);
     return isRunning;
   }
 
@@ -188,7 +189,7 @@ class TasksManager extends React.Component {
     return updatedTasks;
   }
 
-  handleTaskEnd(evt) {
+  handleTaskEnd = evt => {
     const taskID = evt.target.parentElement.parentElement.id;
 
     if (this.isTaskRunning(taskID)) {
@@ -197,7 +198,8 @@ class TasksManager extends React.Component {
       this.updateTaskData(taskID, updatedTasks);
     }
 
-    
+    const updatedTasks = this.configTaskData(taskID, {isDone: true});
+    this.updateTaskData(taskID, updatedTasks);
   }
 
   Task(item) {

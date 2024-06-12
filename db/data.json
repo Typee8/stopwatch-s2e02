@@ -3,12 +3,12 @@
     {
       "name": "2nd task",
       "time": {
-        "seconds": 4,
+        "seconds": 25,
         "minutes": 2,
         "hours": 0
       },
       "isRunning": false,
-      "isDone": false,
+      "isDone": true,
       "isRemoved": false,
       "id": 2
     },

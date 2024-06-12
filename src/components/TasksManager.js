@@ -122,10 +122,9 @@ class TasksManager extends React.Component {
 
   handleTaskStartPause = (evt) => {
     const taskID = evt.target.parentElement.parentElement.id;
-    const isRunning = this.isTaskRunning(taskID);
 
-    if (isRunning) {
-      const {tasks} = this.state;
+    if (this.isTaskRunning(taskID)) {
+      const { tasks } = this.state;
       this.removeTimeInterval(taskID);
 
       const copyTasks = tasks.map((item) => item);
@@ -136,11 +135,9 @@ class TasksManager extends React.Component {
         }
       });
 
-      this.setState({ tasks: copyTasks });
-      const selectedTask = tasks.filter((item) => item.id === taskID);
-      this.serverAPI.putData(taskID, selectedTask[0]);
+      this.updateTaskData(taskID, copyTasks);
     } else {
-      const {tasks} = this.state;
+      const { tasks } = this.state;
       const intervalID = setInterval(
         this.timerStartCount.bind(this, evt),
         1000
@@ -186,8 +183,9 @@ class TasksManager extends React.Component {
     return isRunning;
   }
 
-  updateTaskData() {
-    this.setState({ tasks: copyTasks });
+  updateTaskData(taskID, array) {
+    const {tasks} = this.state;
+    this.setState({ tasks: array });
     const selectedTask = tasks.filter((item) => item.id === taskID);
     this.serverAPI.putData(taskID, selectedTask[0]);
   }

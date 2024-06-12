@@ -28,7 +28,6 @@ class ServerAPI {
       console.log("FETCH - successful");
       let result = await response.json();
       result = this.eachIDtoString(result);
-
       return result;
     } else {
       throw new Error(`FETCH - failed, status: ${response.status}`);
@@ -41,17 +40,17 @@ class ServerAPI {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(obj)
+      body: JSON.stringify(obj),
     };
+    console.log(options.body);
 
     const response = await fetch(`${this.url}/${id}`, options);
 
     if (response.ok) {
       console.log("PUT - successful");
     } else {
-      throw new Error(`PUT - failed, status: ${response.status}`)
+      throw new Error(`PUT - failed, status: ${response.status}`);
     }
-
   }
 
   eachIDtoString(response) {

@@ -10,7 +10,7 @@ class TasksManager extends React.Component {
   constructor(props) {
     super(props);
     this.serverAPI = new ServerAPI();
-    this.timeIntervals = [];
+    this.intervalIDList = [];
   }
 
   onClick = () => {
@@ -122,33 +122,52 @@ class TasksManager extends React.Component {
 
   handleTaskStartPause = (evt) => {
     const taskID = evt.target.parentElement.parentElement.id;
+    const { tasks } = this.state;
+   const [isRunning] = tasks.filter(item => item.id === taskID).map(item => item.isRunning);
 
-    const isIntervalSet = this.timeIntervals.some(
-      (item) => item.taskID && item.taskID === taskID
-    );
+   if(isRunning) {
+    const {intervalIDList} = this;
+    const [intervalID] = intervalIDList.filter(item => item.id === taskID).map(item => item.intervalID);
+    console.log(intervalID);
+    clearInterval(intervalID);
 
-    if (isIntervalSet) {
-      const setTimeIntervals = this.timeIntervals.filter((item) => {
-        if (item.taskID === taskID) {
-          clearInterval(item.intervalID);
-          
-          const {tasks} = this.state;
-          const selectedTask = tasks.filter(item => item.id === taskID);
-          this.serverAPI.putData(taskID, selectedTask[0]);
-        } else {
-          return item;
-        }
-      });
-      this.timeIntervals = setTimeIntervals;
-    } else {
-      const intervalID = setInterval(
-        this.timerStartCount.bind(this, evt),
-        1000
-      );
+    intervalIDList.forEach(item => {
+      if(item.id === taskID) {
+        const index = intervalIDList.indexOf(item);
+        intervalIDList.splice(index, 1);
+      }
+    })
 
-      this.timeIntervals.push({ intervalID, taskID });
-    }
+    const copyTasks = tasks.map((item) => item);
+
+    copyTasks.forEach((item) => {
+      if (item.id === taskID) {
+        item.isRunning = false;
+      }
+    });
+    this.setState({ tasks: copyTasks });
+    const selectedTask = tasks.filter((item) => item.id === taskID);
+    this.serverAPI.putData(taskID, selectedTask[0]);
+   } else {
+    const intervalID = setInterval(this.timerStartCount.bind(this, evt), 1000);
+
+    this.intervalIDList.push({ intervalID, id: taskID });
+    const copyTasks = tasks.map((item) => item);
+
+    copyTasks.forEach((item) => {
+      if (item.id === taskID) {
+        item.isRunning = true;
+      }
+    });
+    this.setState({ tasks: copyTasks });
+
+    const selectedTask = tasks.filter((item) => item.id === taskID);
+
+    this.serverAPI.putData(taskID, selectedTask[0]);
+   }
   };
+
+  handleTaskEnd() {}
 
   Task(item) {
     return (
@@ -182,7 +201,6 @@ class TasksManager extends React.Component {
     }
   }
 
-  handleTaskEnd() {}
   handleTaskDelete() {}
 }
 

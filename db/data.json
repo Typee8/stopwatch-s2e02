@@ -3,8 +3,8 @@
     {
       "name": "2nd task",
       "time": {
-        "seconds": 59,
-        "minutes": 1,
+        "seconds": 4,
+        "minutes": 2,
         "hours": 0
       },
       "isRunning": false,

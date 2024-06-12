@@ -125,7 +125,7 @@ class TasksManager extends React.Component {
 
     if (this.isTaskRunning(taskID)) {
       this.removeTimeInterval(taskID);
-      const updatedTasks = this.configTaskData(taskID, false);
+      const updatedTasks = this.configTaskData(taskID, {isRunning: false});
       this.updateTaskData(taskID, updatedTasks);
     } else {
       const intervalID = setInterval(
@@ -134,7 +134,7 @@ class TasksManager extends React.Component {
       );
 
       this.intervalIDList.push({ intervalID, id: taskID });
-      const updatedTasks = this.configTaskData(taskID, true);
+      const updatedTasks = this.configTaskData(taskID, { isRunning: true });
       this.updateTaskData(taskID, updatedTasks);
     }
   };
@@ -170,13 +170,16 @@ class TasksManager extends React.Component {
     this.serverAPI.putData(taskID, selectedTask[0]);
   }
 
-  configTaskData(taskID, isRunning = "false") {
+  configTaskData(taskID, ...props) {
     const { tasks } = this.state;
     const copyTasks = tasks.map((item) => item);
 
     copyTasks.forEach((item) => {
       if (item.id === taskID) {
-        item.isRunning = isRunning;
+        props.forEach(ele => {
+          const key = Object.keys(ele);
+          item[key] = ele[key];
+        })
       }
     });
 
@@ -185,7 +188,17 @@ class TasksManager extends React.Component {
     return updatedTasks;
   }
 
-  handleTaskEnd() {}
+  handleTaskEnd(evt) {
+    const taskID = evt.target.parentElement.parentElement.id;
+
+    if (this.isTaskRunning(taskID)) {
+      this.removeTimeInterval(taskID);
+      const updatedTasks = this.configTaskData(taskID, {isRunning: false});
+      this.updateTaskData(taskID, updatedTasks);
+    }
+
+    
+  }
 
   Task(item) {
     return (

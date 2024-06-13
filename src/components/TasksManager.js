@@ -24,7 +24,7 @@ class TasksManager extends React.Component {
 
   async handleTaskSubmit(evt) {
     evt.preventDefault();
-    const { tasks, taskName } = this.state;
+    const { taskName } = this.state;
     const { serverAPI } = this;
 
     const task = {
@@ -45,8 +45,7 @@ class TasksManager extends React.Component {
   }
 
   async componentDidMount() {
-    const { serverAPI } = this;
-    const data = await serverAPI.fetchData();
+    const data = await this.serverAPI.fetchData();
     this.setState({ tasks: data });
   }
 
@@ -94,9 +93,10 @@ class TasksManager extends React.Component {
   }
 
   timerStartCount(evt) {
+    // sekundy --> % z sekund
     const targetID = evt.target.parentElement.parentElement.id;
     const { tasks } = this.state;
-    const copyTasks = tasks.map((item) => item);
+    const copyTasks = this.createDeepCopy(tasks.map((item) => item));
     const targetTask = copyTasks.filter((item) => item.id === targetID);
 
     let { seconds, minutes, hours } = targetTask[0].time;
@@ -125,8 +125,10 @@ class TasksManager extends React.Component {
 
     if (this.isTaskRunning(taskID)) {
       this.removeTimeInterval(taskID);
-      const updatedTasks = this.configTaskData(taskID, {isRunning: false});
-      this.updateTaskData(taskID, updatedTasks);
+      const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
+        isRunning: false,
+      });
+      this.updateTaskData(taskID, currentTask, updatedTasks);
     } else {
       const intervalID = setInterval(
         this.timerStartCount.bind(this, evt),
@@ -134,8 +136,10 @@ class TasksManager extends React.Component {
       );
 
       this.intervalIDList.push({ intervalID, id: taskID });
-      const updatedTasks = this.configTaskData(taskID, { isRunning: true });
-      this.updateTaskData(taskID, updatedTasks);
+      const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
+        isRunning: true,
+      });
+      this.updateTaskData(taskID, currentTask, updatedTasks);
     }
   };
 
@@ -160,47 +164,65 @@ class TasksManager extends React.Component {
     const [isRunning] = tasks
       .filter((item) => item.id === taskID)
       .map((item) => item.isRunning);
-      console.log(isRunning);
+    console.log(isRunning);
     return isRunning;
   }
 
-  updateTaskData(taskID, array) {
-    const { tasks } = this.state;
-    this.setState({ tasks: array });
-    const selectedTask = tasks.filter((item) => item.id === taskID);
-    this.serverAPI.putData(taskID, selectedTask[0]);
+  updateTaskData(taskID, currentTask, updatedTasks) {
+    this.setState({ tasks: updatedTasks }, () => {
+      this.serverAPI.putData(taskID, currentTask);
+    });
   }
 
-  configTaskData(taskID, ...props) {
+  getUpdatedTaskData(taskID, ...props) {
     const { tasks } = this.state;
-    const copyTasks = tasks.map((item) => item);
+    const copyTasks = this.createDeepCopy(tasks.map((item) => item));
+
+    let currentTask = null;
 
     copyTasks.forEach((item) => {
       if (item.id === taskID) {
-        props.forEach(ele => {
+        props.forEach((ele) => {
           const key = Object.keys(ele);
           item[key] = ele[key];
-        })
+        });
+
+        currentTask = { ...item };
       }
     });
 
     const updatedTasks = copyTasks;
 
-    return updatedTasks;
+    return [currentTask, updatedTasks];
   }
 
-  handleTaskEnd = evt => {
+  createDeepCopy(item) {
+    const deepCopy = JSON.parse(JSON.stringify(item));
+
+    return deepCopy;
+  }
+
+  handleTaskEnd = (evt) => {
     const taskID = evt.target.parentElement.parentElement.id;
 
     if (this.isTaskRunning(taskID)) {
       this.removeTimeInterval(taskID);
-      const updatedTasks = this.configTaskData(taskID, {isRunning: false});
-      this.updateTaskData(taskID, updatedTasks);
+      const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
+        isRunning: false,
+      });
+      this.updateTaskData(taskID, currentTask, updatedTasks);
     }
 
-    const updatedTasks = this.configTaskData(taskID, {isDone: true});
-    this.updateTaskData(taskID, updatedTasks);
-  }
+    const [currentTask, updatedTasks] = this.getUpdatedTaskData(
+      taskID,
+      { isRunning: false },
+      {
+        isDone: true,
+      }
+    );
+    console.log(updatedTasks);
+    this.updateTaskData(taskID, currentTask, updatedTasks);
+  };
 
   Task(item) {
     return (

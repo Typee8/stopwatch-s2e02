@@ -49,7 +49,11 @@ class TasksManager extends React.Component {
     const { tasks } = this.state;
 
     return tasks.map((item) => {
+      if(item.isDone === true) {
+        return <>{this.TaskDone(item)}</>;
+      } else {
       return <>{this.Task(item)}</>;
+      }
     });
   }
 
@@ -225,6 +229,8 @@ class TasksManager extends React.Component {
     this.updateTaskData(taskID, currentTask, updatedTasks);
   };
 
+  handleTaskRemove() {}
+
   Task(item) {
     return (
       <section id={item.id}>
@@ -234,7 +240,24 @@ class TasksManager extends React.Component {
         <footer>
           <button onClick={this.handleTaskStartPause}>start/pause</button>
           <button onClick={this.handleTaskEnd}>zakończone</button>
-          <button onClick={this.handleTaskDelete} disabled="true">
+          <button disabled="true">
+            usuń
+          </button>
+        </footer>
+      </section>
+    );
+  }
+
+  TaskDone(item) {
+    return (
+      <section id={item.id}>
+        <header>
+          {item.name}, {this.timerShowTime(item.id)}
+        </header>
+        <footer>
+          <button disabled={true}>start/pause</button>
+          <button disabled={true}>zakończone</button>
+          <button onClick={this.handleTaskRemove} disabled={false}>
             usuń
           </button>
         </footer>
@@ -256,8 +279,6 @@ class TasksManager extends React.Component {
       return <>{this.TaskInput()}</>;
     }
   }
-
-  handleTaskDelete() {}
 }
 
 export default TasksManager;

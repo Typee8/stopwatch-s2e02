@@ -2,9 +2,9 @@
   "data": [
     {
       "name": "2nd task",
-      "time": 10820,
+      "time": 10827,
       "isRunning": false,
-      "isDone": false,
+      "isDone": true,
       "isRemoved": false,
       "id": 2
     },

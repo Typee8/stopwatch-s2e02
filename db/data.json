@@ -1,19 +1,27 @@
 {
   "data": [
     {
-      "name": "2nd task",
-      "time": 10827,
+      "name": "New Task",
+      "time": 0,
       "isRunning": false,
       "isDone": true,
+      "isRemoved": true,
+      "id": 1
+    },
+    {
+      "name": "New Task",
+      "time": 0,
+      "isRunning": false,
+      "isDone": false,
       "isRemoved": false,
       "id": 2
     },
     {
-      "name": "3rd task",
-      "time": 120,
+      "name": "Another Task",
+      "time": 0,
       "isRunning": false,
-      "isDone": false,
-      "isRemoved": false,
+      "isDone": true,
+      "isRemoved": true,
       "id": 3
     }
   ]

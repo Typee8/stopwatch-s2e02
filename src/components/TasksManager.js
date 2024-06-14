@@ -49,10 +49,12 @@ class TasksManager extends React.Component {
     const { tasks } = this.state;
 
     return tasks.map((item) => {
-      if(item.isDone === true) {
+      if (item.isRemoved === true) {
+        return;
+      } else if (item.isDone === true) {
         return <>{this.TaskDone(item)}</>;
       } else {
-      return <>{this.Task(item)}</>;
+        return <>{this.Task(item)}</>;
       }
     });
   }
@@ -169,7 +171,6 @@ class TasksManager extends React.Component {
     const [isRunning] = tasks
       .filter((item) => item.id === taskID)
       .map((item) => item.isRunning);
-    console.log(isRunning);
     return isRunning;
   }
 
@@ -225,11 +226,22 @@ class TasksManager extends React.Component {
         isDone: true,
       }
     );
-    console.log(updatedTasks);
     this.updateTaskData(taskID, currentTask, updatedTasks);
   };
 
-  handleTaskRemove() {}
+  handleTaskRemove = (evt) => {
+    const taskID = evt.target.parentElement.parentElement.id;
+
+    const [currentTask, updatedTasks] = this.getUpdatedTaskData(
+      taskID,
+      {
+        isRunning: false,
+      },
+      { isDone: true },
+      { isRemoved: true }
+    );
+    this.updateTaskData(taskID, currentTask, updatedTasks);
+  };
 
   Task(item) {
     return (
@@ -240,9 +252,7 @@ class TasksManager extends React.Component {
         <footer>
           <button onClick={this.handleTaskStartPause}>start/pause</button>
           <button onClick={this.handleTaskEnd}>zakończone</button>
-          <button disabled="true">
-            usuń
-          </button>
+          <button disabled={true}>usuń</button>
         </footer>
       </section>
     );

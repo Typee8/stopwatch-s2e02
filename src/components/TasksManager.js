@@ -29,11 +29,7 @@ class TasksManager extends React.Component {
 
     const task = {
       name: taskName,
-      time: {
-        seconds: 0,
-        minutes: 0,
-        hours: 0,
-      },
+      time: 0,
       isRunning: false,
       isDone: false,
       isRemoved: false,
@@ -73,47 +69,52 @@ class TasksManager extends React.Component {
   }
 
   timerShowTime(id) {
-    const [seconds, minutes, hours] = this.timerGetNormalizedUnits(id);
-    const time = `${hours}:${minutes}:${seconds}`;
+    const currentTask = this.state.tasks.filter((item) => item.id === id);
 
-    return <>{time}</>;
+    const { time } = currentTask[0];
+    const [seconds, minutes, hours] = this.parseTimeForDisplay(time);
+
+    const timeDisplay = `${hours}:${minutes}:${seconds}`;
+
+    return <>{timeDisplay}</>;
   }
 
-  timerGetNormalizedUnits(id) {
-    const taskArray = this.state.tasks.filter((item) => item.id === id);
-    const task = taskArray[0];
+  parseTimeForDisplay(timeInSeconds) {
+    let seconds, minutes, hours;
+    seconds = timeInSeconds;
+    minutes = 0;
+    hours = 0;
 
-    const { seconds, minutes, hours } = task.time;
+    if (seconds >= 60) {
+      seconds %= 60;
+      minutes = parseInt(timeInSeconds / 60);
+    }
 
-    const timer = [seconds, minutes, hours].map((item) =>
+    if (minutes >= 60) {
+      minutes %= 60;
+      hours = parseInt(timeInSeconds / 60 ** 2);
+    }
+
+    [seconds, minutes, hours] = [seconds, minutes, hours].map((item) =>
       item.toString().padStart(2, "0")
     );
 
-    return timer;
+    return [seconds, minutes, hours];
   }
 
   timerStartCount(evt) {
-    // sekundy --> % z sekund
     const targetID = evt.target.parentElement.parentElement.id;
     const { tasks } = this.state;
     const copyTasks = this.createDeepCopy(tasks.map((item) => item));
-    const targetTask = copyTasks.filter((item) => item.id === targetID);
+    const currentTask = copyTasks.filter((item) => item.id === targetID);
 
-    let { seconds, minutes, hours } = targetTask[0].time;
-    seconds++;
+    let { time } = currentTask[0];
 
-    if (seconds >= 60) {
-      minutes++;
-      seconds = 0;
-    }
-    if (minutes >= 60) {
-      hours++;
-      minutes = 0;
-    }
+    time++;
 
     copyTasks.forEach((item) => {
       if (item.id === targetID) {
-        item.time = { seconds, minutes, hours };
+        item.time = time;
       }
     });
 

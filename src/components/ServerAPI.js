@@ -1,6 +1,6 @@
 class ServerAPI {
   constructor() {
-    this.url = "http://localhost:3005/data";
+    this.url = "http://192.168.1.103:3005/data";
   }
 
   async postData(obj) {

@@ -1,0 +1,50 @@
+:root {
+  --btn-width-default: 50px;
+  --btn-height-default: 50px;
+}
+
+.task__btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--btn-width-default);
+  height: var(--btn-height-default);
+  border: none;
+  border-radius: 50%;
+}
+
+.task__btn-start,
+.task__btn-remove {
+  grid-column: 2/3;
+  width: calc(var(--btn-width-default) * 2);
+  height: calc(var(--btn-height-default) * 2);
+  margin-inline: 40px;
+}
+
+.task__btn-remove--small {
+  grid-column: 3/4;
+  width: var(--btn-width-default);
+  height: var(--btn-height-default);
+  margin: 0;
+}
+
+.task__btn-end {
+  justify-self: right;
+}
+
+.task__btn-pause {
+  width: calc(var(--btn-width-default) * 3);
+  height: calc(var(--btn-height-default) * 2);
+  margin-inline: 40px;
+  border-radius: 30px;
+}
+
+.btn__icon {
+  width: var(--btn-width-default);
+  height: var(--btn-height-default);
+}
+
+.btn__icon--small {
+  width: 20px;
+  height: 20px;
+}

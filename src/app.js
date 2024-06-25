@@ -3,10 +3,15 @@ import { createRoot } from 'react-dom/client';
 
 import TasksManager from './components/TasksManager'
 
-import './styles/main.css';
+function importCSSFiles(styles) {
+  styles.keys().forEach(styles);
+}
 
+const styles = require.context("./styles", false, /\.css$/);
+importCSSFiles(styles);
 
 const App = () => <TasksManager/>;
 
 const root = createRoot(document.querySelector('#root'));
 root.render(<App />);
+

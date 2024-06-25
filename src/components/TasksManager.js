@@ -1,6 +1,20 @@
 import React from "react";
 import ServerAPI from "./ServerAPI";
 
+function importAllSVG() {
+  const r = require.context("../styles/svg-icons", false, /\.svg$/);
+
+  const svgList = {};
+  r.keys().forEach((key) => {
+    r;
+    const svgName = key.replace("./", "").replace(".svg", "");
+
+    svgList[svgName] = r(key).default;
+  });
+  return svgList;
+}
+const svgList = importAllSVG();
+
 class TasksManager extends React.Component {
   state = {
     taskName: "",
@@ -51,17 +65,15 @@ class TasksManager extends React.Component {
     return tasks.map((item) => {
       if (item.isRemoved === true) {
         return;
-      } else if (item.isDone === true) {
-        return <>{this.TaskDone(item)}</>;
-      } else {
-        return <>{this.Task(item)}</>;
       }
+
+      return <>{this.TaskTemplate(item)}</>;
     });
   }
 
   TaskInput() {
     return (
-      <form onSubmit={this.handleTaskSubmit.bind(this)}>
+      <form className="taskForm" onSubmit={this.handleTaskSubmit.bind(this)}>
         <label htmlFor="taskName">Provide Task Name:</label>
         <input
           name="taskName"
@@ -80,7 +92,13 @@ class TasksManager extends React.Component {
     const { time } = currentTask[0];
     const [seconds, minutes, hours] = this.parseTimeForDisplay(time);
 
-    const timeDisplay = `${hours}:${minutes}:${seconds}`;
+    let timeDisplay;
+
+    if (hours > 0) {
+      timeDisplay = `${hours}:${minutes}:${seconds}`;
+    } else {
+      timeDisplay = `${minutes}:${seconds}`;
+    }
 
     return <>{timeDisplay}</>;
   }
@@ -108,27 +126,26 @@ class TasksManager extends React.Component {
     return [seconds, minutes, hours];
   }
 
-  timerStartCount(evt) {
-    const targetID = evt.target.parentElement.parentElement.id;
+  timerStartCount(taskID) {
     const { tasks } = this.state;
     const copyTasks = this.createDeepCopy(tasks.map((item) => item));
-    const currentTask = copyTasks.filter((item) => item.id === targetID);
+    const currentTask = copyTasks.filter((item) => item.id === taskID);
 
     let { time } = currentTask[0];
 
     time++;
 
     copyTasks.forEach((item) => {
-      if (item.id === targetID) {
+      if (item.id === taskID) {
         item.time = time;
       }
     });
-
     this.setState({ tasks: copyTasks });
   }
 
   handleTaskStartPause = (evt) => {
-    const taskID = evt.target.parentElement.parentElement.id;
+    console.log(evt.currentTarget);
+    const taskID = evt.currentTarget.parentElement.parentElement.id;
 
     if (this.isTaskRunning(taskID)) {
       this.removeTimeInterval(taskID);
@@ -138,7 +155,7 @@ class TasksManager extends React.Component {
       this.updateTaskData(taskID, currentTask, updatedTasks);
     } else {
       const intervalID = setInterval(
-        this.timerStartCount.bind(this, evt),
+        this.timerStartCount.bind(this, taskID),
         1000
       );
 
@@ -209,7 +226,7 @@ class TasksManager extends React.Component {
   }
 
   handleTaskEnd = (evt) => {
-    const taskID = evt.target.parentElement.parentElement.id;
+    const taskID = evt.currentTarget.parentElement.parentElement.id;
 
     if (this.isTaskRunning(taskID)) {
       this.removeTimeInterval(taskID);
@@ -230,7 +247,7 @@ class TasksManager extends React.Component {
   };
 
   handleTaskRemove = (evt) => {
-    const taskID = evt.target.parentElement.parentElement.id;
+    const taskID = evt.currentTarget.parentElement.parentElement.id;
 
     const [currentTask, updatedTasks] = this.getUpdatedTaskData(
       taskID,
@@ -243,34 +260,132 @@ class TasksManager extends React.Component {
     this.updateTaskData(taskID, currentTask, updatedTasks);
   };
 
-  Task(item) {
+  startPauseButton(isRunning) {
+    if (isRunning) {
+      return (
+        <button
+          className="task__btn task__btn-pause"
+          onClick={this.handleTaskStartPause}
+        >
+          <img className="btn__icon" src={svgList.equals_icon} />
+        </button>
+      );
+    }
     return (
-      <section id={item.id}>
-        <header>
-          {item.name}, {this.timerShowTime(item.id)}
-        </header>
-        <footer>
-          <button onClick={this.handleTaskStartPause}>start/pause</button>
-          <button onClick={this.handleTaskEnd}>zakończone</button>
-          <button disabled={true}>usuń</button>
-        </footer>
-      </section>
+      <button
+        className="task__btn task__btn-start"
+        onClick={this.handleTaskStartPause}
+      >
+        <img className="btn__icon" src={svgList.greaterThan_icon} />
+      </button>
     );
   }
 
-  TaskDone(item) {
+  TaskBtnRemove() {
     return (
-      <section id={item.id}>
-        <header>
-          {item.name}, {this.timerShowTime(item.id)}
-        </header>
-        <footer>
-          <button disabled={true}>start/pause</button>
-          <button disabled={true}>zakończone</button>
-          <button onClick={this.handleTaskRemove} disabled={false}>
-            usuń
+      <button
+        className="task__btn task__btn-remove"
+        onClick={this.handleTaskRemove}
+        disabled={false}
+      >
+        <img className="btn__icon" src={svgList.bin_icon} />
+      </button>
+    );
+  }
+
+  TaskBtnRemoveSmall() {
+        return (
+          <button
+            className="task__btn task__btn-remove task__btn-remove--small"
+            onClick={this.handleTaskRemove}
+            disabled={false}
+          >
+            <img className="btn__icon btn__icon--small" src={svgList.bin_icon} />
           </button>
-        </footer>
+        );
+  }
+
+  TaskBtnStart() {
+    return (
+      <button
+        className="task__btn task__btn-start"
+        onClick={this.handleTaskStartPause}
+      >
+        <img className="btn__icon" src={svgList.greaterThan_icon} />
+      </button>
+    );
+  }
+
+  TaskBtnPause() {
+    return (
+      <button
+        className="task__btn task__btn-pause"
+        onClick={this.handleTaskStartPause}
+      >
+        <img className="btn__icon" src={svgList.equals_icon} />
+      </button>
+    );
+  }
+
+  TaskBtnEnd() {
+    return (
+      <button className="task__btn task__btn-end" onClick={this.handleTaskEnd}>
+        <img className="btn__icon btn__icon--small" src={svgList.square_icon} />
+      </button>
+    );
+  }
+
+  manageTaskBtns(item) {
+    if (item.isRemoved) {
+      return;
+    }
+
+    if (item.time === 0) {
+      return <>{this.TaskBtnStart()}
+      {this.TaskBtnRemoveSmall(item)}</>;
+    }
+
+    if (item.isDone) {
+      return <>{this.TaskBtnRemove()}</>;
+    }
+
+    if (item.isRunning) {
+      return (
+        <>
+          {this.TaskBtnEnd()}
+          {this.TaskBtnPause()}
+        </>
+      );
+    }
+
+    return (
+      <>
+        {this.TaskBtnEnd()}
+        {this.TaskBtnStart()}
+      </>
+    );
+  }
+
+  TaskFooter(item) {
+    return (
+      <footer className="task__footer">{this.manageTaskBtns(item)}</footer>
+    );
+  }
+
+  TaskHeader(item) {
+    return (
+      <header className="task__header">
+        <div className="task__name">{item.name}</div>
+        <div className="task__timer">{this.timerShowTime(item.id)}</div>
+      </header>
+    );
+  }
+
+  TaskTemplate(item) {
+    return (
+      <section id={item.id} className="task">
+        {this.TaskHeader(item)}
+        {this.TaskFooter(item)}
       </section>
     );
   }

@@ -22,6 +22,11 @@
   font-size: 64px;
 }
 
+.taskForm__input {
+  font-size: 40px;
+  color: white;
+}
+
 .task__name {
   font-size: 24px;
 }

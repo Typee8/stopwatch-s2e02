@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve --mode development --open",
     "build": "webpack --mode production",
-    "jsonServer": "json-server --watch ./db/data.json --port 3005"
+    "jsonServer": "json-server --watch ./db/data.json --port 3005",
+    "jsonServer-for-all-devices": "json-server --watch ./db/data.json --host 0.0.0.0 --port 3005"
   },
   "keywords": [],
   "author": "",

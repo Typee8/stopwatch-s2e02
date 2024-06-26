@@ -17,8 +17,9 @@ const svgList = importAllSVG();
 
 class TasksManager extends React.Component {
   state = {
-    taskName: "",
+    taskName: "Task Name",
     tasks: [],
+    isTaskFormShown: false,
   };
 
   constructor(props) {
@@ -52,6 +53,7 @@ class TasksManager extends React.Component {
     await serverAPI.postData(task);
     const data = await serverAPI.fetchData();
     this.setState({ tasks: data });
+    this.showHideTaskForm(false);
   }
 
   async componentDidMount() {
@@ -71,11 +73,36 @@ class TasksManager extends React.Component {
     });
   }
 
-  TaskInput() {
+  showHideTaskForm (isShown = false) {
+    this.setState({ isTaskFormShown: isShown });
+  };
+
+  NewTask() {
+    const { isTaskFormShown } = this.state;
+    let content;
+
+    if(isTaskFormShown) {
+      content = <>{this.TaskForm()}</>;
+    } else {
+      content = <>{this.BtnAdd()}</>; 
+    }
+
+    return (
+      <section className="newTask">
+        {content}
+      </section>
+    );
+
+  }
+
+  TaskForm() {
     return (
       <form className="taskForm" onSubmit={this.handleTaskSubmit.bind(this)}>
-        <label htmlFor="taskName">Provide Task Name:</label>
-        <input
+{/*         <label className="taskForm__header" htmlFor="taskName">
+          Task Name:
+        </label> */}
+        <textarea
+          className="taskForm__input"
           name="taskName"
           id="taskName"
           value={this.state.taskName}
@@ -263,28 +290,34 @@ class TasksManager extends React.Component {
   startPauseButton(isRunning) {
     if (isRunning) {
       return (
-        <button
-          className="task__btn task__btn-pause"
-          onClick={this.handleTaskStartPause}
-        >
+        <button className="btn btn--pause" onClick={this.handleTaskStartPause}>
           <img className="btn__icon" src={svgList.equals_icon} />
         </button>
       );
     }
     return (
-      <button
-        className="task__btn task__btn-start"
-        onClick={this.handleTaskStartPause}
-      >
+      <button className="btn btn--start" onClick={this.handleTaskStartPause}>
         <img className="btn__icon" src={svgList.greaterThan_icon} />
       </button>
     );
   }
 
-  TaskBtnRemove() {
+  BtnAdd() {
     return (
       <button
-        className="task__btn task__btn-remove"
+        className="btn btn--add"
+        onClick={() => this.showHideTaskForm(true)}
+        disabled={false}
+      >
+        <img className="btn__icon" src={svgList.cross_icon} />
+      </button>
+    );
+  }
+
+  BtnRemove() {
+    return (
+      <button
+        className="btn btn--remove"
         onClick={this.handleTaskRemove}
         disabled={false}
       >
@@ -293,82 +326,80 @@ class TasksManager extends React.Component {
     );
   }
 
-  TaskBtnRemoveSmall() {
-        return (
-          <button
-            className="task__btn task__btn-remove task__btn-remove--small"
-            onClick={this.handleTaskRemove}
-            disabled={false}
-          >
-            <img className="btn__icon btn__icon--small" src={svgList.bin_icon} />
-          </button>
-        );
-  }
-
-  TaskBtnStart() {
+  BtnRemoveSmall() {
     return (
       <button
-        className="task__btn task__btn-start"
-        onClick={this.handleTaskStartPause}
+        className="btn btn--remove-small"
+        onClick={this.handleTaskRemove}
+        disabled={false}
       >
+        <img className="btn__icon btn__icon--small" src={svgList.bin_icon} />
+      </button>
+    );
+  }
+
+  BtnStart() {
+    return (
+      <button className="btn btn--start" onClick={this.handleTaskStartPause}>
         <img className="btn__icon" src={svgList.greaterThan_icon} />
       </button>
     );
   }
 
-  TaskBtnPause() {
+  BtnPause() {
     return (
-      <button
-        className="task__btn task__btn-pause"
-        onClick={this.handleTaskStartPause}
-      >
+      <button className="btn btn--pause" onClick={this.handleTaskStartPause}>
         <img className="btn__icon" src={svgList.equals_icon} />
       </button>
     );
   }
 
-  TaskBtnEnd() {
+  BtnEnd() {
     return (
-      <button className="task__btn task__btn-end" onClick={this.handleTaskEnd}>
+      <button className="btn btn--end" onClick={this.handleTaskEnd}>
         <img className="btn__icon btn__icon--small" src={svgList.square_icon} />
       </button>
     );
   }
 
-  manageTaskBtns(item) {
+  manageBtns(item) {
     if (item.isRemoved) {
       return;
     }
 
     if (item.time === 0) {
-      return <>{this.TaskBtnStart()}
-      {this.TaskBtnRemoveSmall(item)}</>;
+      return (
+        <>
+          {this.BtnStart()}
+          {this.BtnRemoveSmall(item)}
+        </>
+      );
     }
 
     if (item.isDone) {
-      return <>{this.TaskBtnRemove()}</>;
+      return <>{this.BtnRemove()}</>;
     }
 
     if (item.isRunning) {
       return (
         <>
-          {this.TaskBtnEnd()}
-          {this.TaskBtnPause()}
+          {this.BtnEnd()}
+          {this.BtnPause()}
         </>
       );
     }
 
     return (
       <>
-        {this.TaskBtnEnd()}
-        {this.TaskBtnStart()}
+        {this.BtnEnd()}
+        {this.BtnStart()}
       </>
     );
   }
 
   TaskFooter(item) {
     return (
-      <footer className="task__footer">{this.manageTaskBtns(item)}</footer>
+      <footer className="task__footer">{this.manageBtns(item)}</footer>
     );
   }
 
@@ -396,12 +427,12 @@ class TasksManager extends React.Component {
     if (tasks.length > 0) {
       return (
         <>
-          {this.TaskInput()}
           <section>{this.renderTask()}</section>
+          {this.NewTask()}
         </>
       );
     } else {
-      return <>{this.TaskInput()}</>;
+      return <>{this.NewTask()}</>;
     }
   }
 }

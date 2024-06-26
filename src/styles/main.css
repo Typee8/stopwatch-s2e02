@@ -1,18 +1,25 @@
 body {
     background-color: black;
     color: white;
+    margin: 0;
 }
 
-.task {
+.task,
+.newTask {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: calc(100% - 10px);
-  height: 80vh;
-  margin: 20px 5px;
+  width: calc(100% - 20px);
+  height: 100vh;
+  margin: 20px 10px;
   border-radius: 20px;
   background-color: rgb(31, 31, 31);
+}
+
+.newTask {
+  justify-content: center;
+  align-items: center;
 }
 
 .task__footer {
@@ -35,5 +42,20 @@ body {
 }
 
 .taskForm {
-  height: 20vh;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  text-align: center;
+}
+
+.taskForm__header {
+  margin-bottom: 20px;
+}
+
+.taskForm__input {
+  display: flex;
+  flex-wrap: wrap;
+  background: none;
+  border: none;
+  text-align: center;
 }

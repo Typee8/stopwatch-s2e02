@@ -98,17 +98,15 @@ class TasksManager extends React.Component {
   TaskForm() {
     return (
       <form className="taskForm" onSubmit={this.handleTaskSubmit.bind(this)}>
-{/*         <label className="taskForm__header" htmlFor="taskName">
-          Task Name:
-        </label> */}
         <textarea
           className="taskForm__input"
           name="taskName"
           id="taskName"
           value={this.state.taskName}
           onChange={this.putInputToState}
+          maxLength="33"
         />
-        <input type="submit" />
+        <input className="btn btn--submit" type="submit" />
       </form>
     );
   }
@@ -309,7 +307,7 @@ class TasksManager extends React.Component {
         onClick={() => this.showHideTaskForm(true)}
         disabled={false}
       >
-        <img className="btn__icon" src={svgList.cross_icon} />
+        <img className="btn__icon" src={svgList.plus_icon} />
       </button>
     );
   }

@@ -17,11 +17,15 @@
 .btn--remove,
 .btn--add {
   grid-column: 2/3;
-  width: calc(var(--btn-width-default) * 2);
-  height: calc(var(--btn-height-default) * 2);
+  width: calc(var(--btn-width-default) * 1.8);
+  height: calc(var(--btn-height-default) * 1.8);
   margin-inline: 40px;
 }
 
+.btn--add {
+  align-self: center;
+  margin-block: auto;
+}
 .btn--add-active {
   display: none;
 }
@@ -34,9 +38,10 @@
   justify-self: right;
 }
 
-.btn--pause {
-  width: calc(var(--btn-width-default) * 3);
-  height: calc(var(--btn-height-default) * 2);
+.btn--pause,
+.btn--submit {
+  width: calc(var(--btn-width-default) * 2.5);
+  height: calc(var(--btn-height-default) * 1.8);
   margin-inline: 40px;
   border-radius: 30px;
 }

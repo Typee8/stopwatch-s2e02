@@ -11,15 +11,18 @@
   height: var(--btn-height-default);
   border: none;
   border-radius: 50%;
+  background-color: whitesmoke;
 }
 
 .btn--start,
-.btn--remove,
 .btn--add {
-  grid-column: 2/3;
   width: calc(var(--btn-width-default) * 1.8);
   height: calc(var(--btn-height-default) * 1.8);
-  margin-inline: 40px;
+}
+
+.btn--start,
+.btn--pause {
+  grid-column: 2/3;
 }
 
 .btn--add {
@@ -30,20 +33,15 @@
   display: none;
 }
 
-.btn--remove--small {
-  grid-column: 3/4;
-}
-
-.btn--end {
-  justify-self: right;
-}
-
 .btn--pause,
 .btn--submit {
   width: calc(var(--btn-width-default) * 2.5);
   height: calc(var(--btn-height-default) * 1.8);
-  margin-inline: 40px;
   border-radius: 30px;
+}
+
+.btn--submit {
+  margin-top: 30px;
 }
 
 .btn__icon {
@@ -54,4 +52,17 @@
 .btn__icon--small {
   width: 20px;
   height: 20px;
+}
+
+.btn--remove {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: calc(var(--btn-width-default) * 0.8);
+  height: calc(var(--btn-height-default) * 0.8);
+}
+
+.btn--end {
+  justify-self: right;
+  margin-right: 40px;
 }

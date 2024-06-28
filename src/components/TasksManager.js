@@ -17,8 +17,11 @@ const svgList = importAllSVG();
 
 class TasksManager extends React.Component {
   state = {
-    taskName: "Task Name",
     tasks: [],
+    taskName: {
+      default: "New Task",
+      input: "",
+    },
     isTaskFormShown: false,
   };
 
@@ -28,13 +31,13 @@ class TasksManager extends React.Component {
     this.intervalIDList = [];
   }
 
-  onClick = () => {
-    const { tasks } = this.state;
-  };
-
   putInputToState = (evt) => {
-    const { name, value } = evt.target;
-    this.setState({ [name]: value });
+    const { taskName } = this.state;
+    const taskNameCopy = this.createDeepCopy(taskName);
+    const { value } = evt.target;
+    taskNameCopy.input = value;
+    console.log(taskNameCopy);
+    this.setState({ taskName: taskNameCopy });
   };
 
   async handleTaskSubmit(evt) {
@@ -43,7 +46,7 @@ class TasksManager extends React.Component {
     const { serverAPI } = this;
 
     const task = {
-      name: taskName,
+      name: taskName.input,
       time: 0,
       isRunning: false,
       isDone: false,
@@ -53,7 +56,7 @@ class TasksManager extends React.Component {
     await serverAPI.postData(task);
     const data = await serverAPI.fetchData();
     this.setState({ tasks: data });
-    this.showHideTaskForm(false);
+    this.resetTaskForm();
   }
 
   async componentDidMount() {
@@ -73,36 +76,64 @@ class TasksManager extends React.Component {
     });
   }
 
-  showHideTaskForm (isShown = false) {
-    this.setState({ isTaskFormShown: isShown });
+  resetTaskForm() {
+    const { taskName } = this.state;
+    const taskNameCopy = this.createDeepCopy(taskName);
+    taskNameCopy.input = "";
+    this.setState({ isTaskFormShown: false, taskName: taskNameCopy });
+  }
+
+  displayTaskForm() {
+    this.setState({ isTaskFormShown: true });
+  }
+
+  inputTaskFormValue = (evt) => {
+    const { input } = this.state.taskName;
+    evt.target.value = input;
+  };
+
+  defaultTaskFormValue = (evt) => {
+    console.log(this.state.taskName);
+    if (evt) {
+      const { taskName } = this.state;
+      if (taskName.input.length === 0) {
+        evt.target.value = taskName.default;
+      }
+      return;
+    }
+
+    const { taskName } = this.state;
+    const taskFormInput = document.querySelector(".taskForm__input");
+
+    if (document.activeElement !== taskFormInput) {
+      return taskName.default;
+    }
   };
 
   NewTask() {
     const { isTaskFormShown } = this.state;
     let content;
 
-    if(isTaskFormShown) {
+    if (isTaskFormShown) {
       content = <>{this.TaskForm()}</>;
     } else {
-      content = <>{this.BtnAdd()}</>; 
+      content = <>{this.BtnAdd()}</>;
     }
 
-    return (
-      <section className="newTask">
-        {content}
-      </section>
-    );
-
+    return <section className="newTask">{content}</section>;
   }
 
   TaskForm() {
     return (
       <form className="taskForm" onSubmit={this.handleTaskSubmit.bind(this)}>
+        {this.BtnFormRemove()}
         <textarea
           className="taskForm__input"
           name="taskName"
           id="taskName"
-          value={this.state.taskName}
+          value={this.defaultTaskFormValue()}
+          onFocus={this.inputTaskFormValue}
+          onBlur={(evt) => this.defaultTaskFormValue(evt)}
           onChange={this.putInputToState}
           maxLength="33"
         />
@@ -272,7 +303,10 @@ class TasksManager extends React.Component {
   };
 
   handleTaskRemove = (evt) => {
-    const taskID = evt.currentTarget.parentElement.parentElement.id;
+    const taskID = evt.currentTarget.parentElement.id;
+    if (this.isTaskRunning(taskID)) {
+      this.removeTimeInterval(taskID);
+    }
 
     const [currentTask, updatedTasks] = this.getUpdatedTaskData(
       taskID,
@@ -300,11 +334,19 @@ class TasksManager extends React.Component {
     );
   }
 
+  BtnFormRemove() {
+    return (
+      <button className="btn btn--remove" onClick={() => this.resetTaskForm()}>
+        <img className="btn__icon btn__icon--small" src={svgList.cross_icon} />
+      </button>
+    );
+  }
+
   BtnAdd() {
     return (
       <button
         className="btn btn--add"
-        onClick={() => this.showHideTaskForm(true)}
+        onClick={() => this.displayTaskForm()}
         disabled={false}
       >
         <img className="btn__icon" src={svgList.plus_icon} />
@@ -319,19 +361,7 @@ class TasksManager extends React.Component {
         onClick={this.handleTaskRemove}
         disabled={false}
       >
-        <img className="btn__icon" src={svgList.bin_icon} />
-      </button>
-    );
-  }
-
-  BtnRemoveSmall() {
-    return (
-      <button
-        className="btn btn--remove-small"
-        onClick={this.handleTaskRemove}
-        disabled={false}
-      >
-        <img className="btn__icon btn__icon--small" src={svgList.bin_icon} />
+        <img className="btn__icon btn__icon--small" src={svgList.cross_icon} />
       </button>
     );
   }
@@ -366,25 +396,11 @@ class TasksManager extends React.Component {
     }
 
     if (item.time === 0) {
-      return (
-        <>
-          {this.BtnStart()}
-          {this.BtnRemoveSmall(item)}
-        </>
-      );
-    }
-
-    if (item.isDone) {
-      return <>{this.BtnRemove()}</>;
+      return <>{this.BtnStart()}</>;
     }
 
     if (item.isRunning) {
-      return (
-        <>
-          {this.BtnEnd()}
-          {this.BtnPause()}
-        </>
-      );
+      return <>{this.BtnPause()}</>;
     }
 
     return (
@@ -396,9 +412,7 @@ class TasksManager extends React.Component {
   }
 
   TaskFooter(item) {
-    return (
-      <footer className="task__footer">{this.manageBtns(item)}</footer>
-    );
+    return <footer className="task__footer">{this.manageBtns(item)}</footer>;
   }
 
   TaskHeader(item) {
@@ -413,6 +427,7 @@ class TasksManager extends React.Component {
   TaskTemplate(item) {
     return (
       <section id={item.id} className="task">
+        {this.BtnRemove()}
         {this.TaskHeader(item)}
         {this.TaskFooter(item)}
       </section>

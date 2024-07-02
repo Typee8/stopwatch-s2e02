@@ -31,7 +31,7 @@ class TasksManager extends React.Component {
     this.intervalIDList = [];
   }
 
-  putInputToState = (evt) => {
+  putNameToState = (evt) => {
     const { taskName } = this.state;
     const taskNameCopy = this.createDeepCopy(taskName);
     const { value } = evt.target;
@@ -46,7 +46,7 @@ class TasksManager extends React.Component {
     const { serverAPI } = this;
 
     const task = {
-      name: taskName.input,
+      name: taskName.input.length === 0 ? taskName.default : taskName.input,
       time: 0,
       isRunning: false,
       isDone: false,
@@ -134,7 +134,7 @@ class TasksManager extends React.Component {
           value={this.defaultTaskFormValue()}
           onFocus={this.inputTaskFormValue}
           onBlur={(evt) => this.defaultTaskFormValue(evt)}
-          onChange={this.putInputToState}
+          onChange={this.putNameToState}
           maxLength="33"
         />
         <input className="btn btn--submit" type="submit" />

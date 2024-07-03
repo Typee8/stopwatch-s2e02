@@ -1,3 +1,7 @@
+* {
+  background-color: unset;
+}
+
 body {
     background-color: black;
     color: white;
@@ -13,7 +17,6 @@ body {
   width: calc(100% - 60px);
   min-height: 300px;
   height: 45vh;
-  max-height: 900px;
   margin: 20px 10px;
   padding: 20px;
   border-radius: 20px;

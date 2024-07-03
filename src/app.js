@@ -1,17 +1,16 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
+import React from "react";
+import { createRoot } from "react-dom/client";
 
-import TasksManager from './components/TasksManager'
+import TasksManager from "./components/TasksManager";
 
-function importCSSFiles(styles) {
-  styles.keys().forEach(styles);
-}
+import "./styles/fonts.css";
+import "./styles/main.css";
+import "./styles/tablet.css";
+import "./styles/buttons.css";
 
-const styles = require.context("./styles", false, /\.css$/);
-importCSSFiles(styles);
+const App = () => <TasksManager />;
 
-const App = () => <TasksManager/>;
-
-const root = createRoot(document.querySelector('#root'));
+const root = createRoot(document.querySelector("#root"));
 root.render(<App />);
 
+window.addEventListener('resize', () => console.log(window.innerWidth));

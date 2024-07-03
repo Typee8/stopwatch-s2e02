@@ -439,10 +439,10 @@ class TasksManager extends React.Component {
 
     if (tasks.length > 0) {
       return (
-        <>
-          <section>{this.renderTask()}</section>
+        <section className="root__wrapper">
+          {this.renderTask()}
           {this.NewTask()}
-        </>
+        </section>
       );
     } else {
       return <>{this.NewTask()}</>;

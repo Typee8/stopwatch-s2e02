@@ -1,0 +1,17 @@
+@media (min-width: 700px) {
+.root__wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* test */
+.task {
+  width: 400px;
+  height: 300px;
+  max-width: 440px;
+}
+
+
+
+}

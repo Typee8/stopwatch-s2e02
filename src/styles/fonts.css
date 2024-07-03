@@ -57,4 +57,9 @@
       font-size: 32px;
       color: white;
     }
+
+        .task__name,
+        .btn--submit {
+          font-size: 22px;
+        }
 }

@@ -61,12 +61,12 @@ body {
 .taskForm__input {
   margin-top: 50px;
   width: 80%;
-  height: 140px;
+/*   height: 140px; */
   border: none;
   outline: none;
   background: none;
   text-align: center;
-  resize: none;
+/*   resize: none; */
   overflow: hidden;
 }
 

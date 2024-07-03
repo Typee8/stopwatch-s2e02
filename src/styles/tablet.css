@@ -8,8 +8,10 @@
 
   .task,
   .newTask {
-    height: 260px;
-    margin: 0;
+    height: 300px;
   }
 
+  .task__footer {
+    margin: 10px;
+  }
 }

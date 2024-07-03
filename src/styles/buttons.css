@@ -74,10 +74,6 @@
     --btn-height-default: 40px;
   }
 
-  .task__footer {
-    margin: 0;
-  }
-
   .btn--end {
     margin-right: 20px;
   }

@@ -10,10 +10,10 @@
     },
     {
       "name": "New Task",
-      "time": 16,
+      "time": 96,
       "isRunning": false,
-      "isDone": false,
-      "isRemoved": false,
+      "isDone": true,
+      "isRemoved": true,
       "id": 2
     },
     {
@@ -26,10 +26,10 @@
     },
     {
       "name": "New Task",
-      "time": 0,
+      "time": 125,
       "isRunning": false,
-      "isDone": false,
-      "isRemoved": false,
+      "isDone": true,
+      "isRemoved": true,
       "id": 4
     },
     {
@@ -50,26 +50,26 @@
     },
     {
       "name": "New Task",
-      "time": 0,
+      "time": 92,
       "isRunning": false,
-      "isDone": false,
-      "isRemoved": false,
+      "isDone": true,
+      "isRemoved": true,
       "id": 7
     },
     {
       "name": "New Task",
-      "time": 0,
+      "time": 80,
       "isRunning": false,
-      "isDone": false,
-      "isRemoved": false,
+      "isDone": true,
+      "isRemoved": true,
       "id": 8
     },
     {
       "name": "New Task",
       "time": 0,
       "isRunning": false,
-      "isDone": false,
-      "isRemoved": false,
+      "isDone": true,
+      "isRemoved": true,
       "id": 9
     },
     {
@@ -92,9 +92,49 @@
       "name": "00000",
       "time": 0,
       "isRunning": false,
+      "isDone": true,
+      "isRemoved": true,
+      "id": 12
+    },
+    {
+      "name": "Zrobić zakupy",
+      "time": 0,
+      "isRunning": false,
       "isDone": false,
       "isRemoved": false,
-      "id": 12
+      "id": 13
+    },
+    {
+      "name": "Posprzątać w pokoju gościnnym",
+      "time": 0,
+      "isRunning": true,
+      "isDone": false,
+      "isRemoved": false,
+      "id": 14
+    },
+    {
+      "name": "Przeanalizować dzieła sztuki w ko",
+      "time": 0,
+      "isRunning": false,
+      "isDone": false,
+      "isRemoved": false,
+      "id": 15
+    },
+    {
+      "name": "Zrobić i zjeść obiad",
+      "time": 0,
+      "isRunning": true,
+      "isDone": false,
+      "isRemoved": false,
+      "id": 16
+    },
+    {
+      "name": "Przed  użyciem skonsultuj się z l",
+      "time": 0,
+      "isRunning": false,
+      "isDone": false,
+      "isRemoved": false,
+      "id": 17
     }
   ]
 }

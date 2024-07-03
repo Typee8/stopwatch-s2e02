@@ -10,7 +10,7 @@
     },
     {
       "name": "New Task",
-      "time": 0,
+      "time": 16,
       "isRunning": false,
       "isDone": false,
       "isRemoved": false,
@@ -76,9 +76,25 @@
       "name": "New Task",
       "time": 0,
       "isRunning": false,
+      "isDone": true,
+      "isRemoved": true,
+      "id": 10
+    },
+    {
+      "name": "New Task",
+      "time": 0,
+      "isRunning": false,
+      "isDone": true,
+      "isRemoved": true,
+      "id": 11
+    },
+    {
+      "name": "00000",
+      "time": 0,
+      "isRunning": false,
       "isDone": false,
       "isRemoved": false,
-      "id": 10
+      "id": 12
     }
   ]
 }

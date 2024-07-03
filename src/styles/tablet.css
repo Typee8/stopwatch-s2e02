@@ -1,17 +1,15 @@
 @media (min-width: 700px) {
-.root__wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
+  .root__wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 300px);
+    gap: 20px;
+    justify-content: center;
+  }
 
-/* test */
-.task {
-  width: 400px;
-  height: 300px;
-  max-width: 440px;
-}
-
-
+  .task,
+  .newTask {
+    height: 260px;
+    margin: 0;
+  }
 
 }

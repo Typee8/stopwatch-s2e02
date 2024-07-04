@@ -23,6 +23,7 @@ class TasksManager extends React.Component {
       input: "",
     },
     isTaskFormShown: false,
+    TaskFormScrollHeight: null,
   };
 
   constructor(props) {
@@ -36,9 +37,21 @@ class TasksManager extends React.Component {
     const taskNameCopy = this.createDeepCopy(taskName);
     const { value } = evt.target;
     taskNameCopy.input = value;
-    console.log(taskNameCopy);
     this.setState({ taskName: taskNameCopy });
+
+    this.increaseSpaceOfTaskForm(evt);
   };
+
+  increaseSpaceOfTaskForm(evt) {
+    const input = evt.target;
+    const { scrollHeight } = input;
+
+    if (input.value.length > 5) {
+      this.setState({ TaskFormScrollHeight: scrollHeight });
+    } else {
+      this.setState({ TaskFormScrollHeight: 100 });
+    }
+  }
 
   async handleTaskSubmit(evt) {
     evt.preventDefault();
@@ -93,7 +106,6 @@ class TasksManager extends React.Component {
   };
 
   defaultTaskFormValue = (evt) => {
-    console.log(this.state.taskName);
     if (evt) {
       const { taskName } = this.state;
       if (taskName.input.length === 0) {
@@ -147,6 +159,9 @@ class TasksManager extends React.Component {
           className="taskForm__input"
           name="taskName"
           id="taskName"
+          style={{
+            height: this.state.TaskFormScrollHeight,
+          }}
           value={this.defaultTaskFormValue()}
           onFocus={this.inputTaskFormValue}
           onBlur={(evt) => this.defaultTaskFormValue(evt)}
@@ -215,11 +230,16 @@ class TasksManager extends React.Component {
     this.setState({ tasks: copyTasks });
   }
 
+  doesIntervalExists(id) {
+    const result = this.intervalIDList.some((item) => item.id === id);
+    console.log(result);
+    return result;
+  }
+
   handleTaskStartPause = (evt) => {
-    console.log(evt.currentTarget);
     const taskID = evt.currentTarget.parentElement.parentElement.id;
 
-    if (this.isTaskRunning(taskID)) {
+    if (this.doesIntervalExists(taskID)) {
       this.removeTimeInterval(taskID);
       const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
         isRunning: false,
@@ -239,20 +259,50 @@ class TasksManager extends React.Component {
     }
   };
 
+  handleTaskStart = evt => {
+        const taskID = evt.currentTarget.parentElement.parentElement.id;
+
+        const intervalID = setInterval(
+          this.timerStartCount.bind(this, taskID),
+          1000
+        );
+
+        this.intervalIDList.push({ intervalID, id: taskID });
+        const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
+          isRunning: true,
+        });
+        this.updateTaskData(taskID, currentTask, updatedTasks);
+  }
+
+  handleTaskPause = evt => {
+        const taskID = evt.currentTarget.parentElement.parentElement.id;
+
+        this.removeTimeInterval(taskID);
+        const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
+          isRunning: false,
+        });
+        this.updateTaskData(taskID, currentTask, updatedTasks);
+  }
+
   removeTimeInterval(taskID) {
     const { intervalIDList } = this;
-    const [intervalID] = intervalIDList
+    const matchedIntervals = intervalIDList
       .filter((item) => item.id === taskID)
       .map((item) => item.intervalID);
-    const indexOfIntervalID = intervalIDList.map((item) => {
-      if (item.id === taskID) {
-        const index = intervalIDList.indexOf(item);
-        return index;
-      }
-    });
 
-    clearInterval(intervalID);
-    intervalIDList.splice(indexOfIntervalID, 1);
+    matchedIntervals.forEach((interval) => {
+      clearInterval(interval);
+
+      const indexOfInterval = intervalIDList.map((item) => {
+        if (item.id === taskID) {
+          const index = intervalIDList.indexOf(item);
+          return index;
+        }
+      });
+
+      intervalIDList.splice(indexOfInterval, 1);
+    });
+    console.log(intervalIDList);
   }
 
   isTaskRunning(taskID) {
@@ -302,10 +352,6 @@ class TasksManager extends React.Component {
 
     if (this.isTaskRunning(taskID)) {
       this.removeTimeInterval(taskID);
-      const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
-        isRunning: false,
-      });
-      this.updateTaskData(taskID, currentTask, updatedTasks);
     }
 
     const [currentTask, updatedTasks] = this.getUpdatedTaskData(
@@ -334,21 +380,6 @@ class TasksManager extends React.Component {
     );
     this.updateTaskData(taskID, currentTask, updatedTasks);
   };
-
-  startPauseButton(isRunning) {
-    if (isRunning) {
-      return (
-        <button className="btn btn--pause" onClick={this.handleTaskStartPause}>
-          <img className="btn__icon" src={svgList.equals_icon} />
-        </button>
-      );
-    }
-    return (
-      <button className="btn btn--start" onClick={this.handleTaskStartPause}>
-        <img className="btn__icon" src={svgList.greaterThan_icon} />
-      </button>
-    );
-  }
 
   BtnFormRemove() {
     return (
@@ -384,7 +415,7 @@ class TasksManager extends React.Component {
 
   BtnStart() {
     return (
-      <button className="btn btn--start" onClick={this.handleTaskStartPause}>
+      <button className="btn btn--start" onClick={this.handleTaskStart}>
         <img className="btn__icon" src={svgList.greaterThan_icon} />
       </button>
     );
@@ -392,7 +423,7 @@ class TasksManager extends React.Component {
 
   BtnPause() {
     return (
-      <button className="btn btn--pause" onClick={this.handleTaskStartPause}>
+      <button className="btn btn--pause" onClick={this.handleTaskPause}>
         <img className="btn__icon" src={svgList.equals_icon} />
       </button>
     );
@@ -415,7 +446,7 @@ class TasksManager extends React.Component {
       return <>{this.BtnStart()}</>;
     }
 
-    if (item.isRunning) {
+    if (item.isRunning || this.doesIntervalExists(item.id)) {
       return <>{this.BtnPause()}</>;
     }
 

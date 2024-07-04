@@ -1,48 +1,48 @@
 {
   "data": [
     {
-      "name": "New Task",
-      "time": 0,
+      "name": "1",
+      "time": 72,
       "isRunning": false,
       "isDone": true,
       "isRemoved": true,
       "id": 1
     },
     {
-      "name": "New Task",
-      "time": 96,
+      "name": "2",
+      "time": 40,
       "isRunning": false,
       "isDone": true,
       "isRemoved": true,
       "id": 2
     },
     {
-      "name": "New Task",
-      "time": 0,
+      "name": "3",
+      "time": 153,
       "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
+      "isDone": false,
+      "isRemoved": false,
       "id": 3
     },
     {
-      "name": "New Task",
-      "time": 125,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
+      "name": "4",
+      "time": 76,
+      "isRunning": true,
+      "isDone": false,
+      "isRemoved": false,
       "id": 4
     },
     {
-      "name": "ddddddddddddddddddddddddddddddddd",
-      "time": 0,
+      "name": "Hdhxjdjd",
+      "time": 57,
       "isRunning": false,
       "isDone": true,
       "isRemoved": true,
       "id": 5
     },
     {
-      "name": "fffffffffffffffffffffffffffffffff",
-      "time": 0,
+      "name": "New Task",
+      "time": 35,
       "isRunning": false,
       "isDone": true,
       "isRemoved": true,
@@ -50,15 +50,15 @@
     },
     {
       "name": "New Task",
-      "time": 92,
+      "time": 144,
       "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
+      "isDone": false,
+      "isRemoved": false,
       "id": 7
     },
     {
       "name": "New Task",
-      "time": 80,
+      "time": 32,
       "isRunning": false,
       "isDone": true,
       "isRemoved": true,
@@ -66,123 +66,19 @@
     },
     {
       "name": "New Task",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
+      "time": 66,
+      "isRunning": true,
+      "isDone": false,
+      "isRemoved": false,
       "id": 9
     },
     {
       "name": "New Task",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 10
-    },
-    {
-      "name": "New Task",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 11
-    },
-    {
-      "name": "00000",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 12
-    },
-    {
-      "name": "Zrobić zakupy",
-      "time": 0,
+      "time": 47,
       "isRunning": false,
       "isDone": false,
       "isRemoved": false,
-      "id": 13
-    },
-    {
-      "name": "Posprzątać w pokoju gościnnym",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 14
-    },
-    {
-      "name": "Przeanalizować dzieła sztuki w ko",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 15
-    },
-    {
-      "name": "Zrobić i zjeść obiad",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 16
-    },
-    {
-      "name": "Przed  użyciem skonsultuj się z l",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 17
-    },
-    {
-      "name": "New Task",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 18
-    },
-    {
-      "name": "New Task",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 19
-    },
-    {
-      "name": "Przed użyciem skonsultować się z lekarze",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 20
-    },
-    {
-      "name": "Nfjdjdjdjdjdkkdjdkdkkdkdkdkksdkkdkd",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 21
-    },
-    {
-      "name": "Dzisiaj zjadłem pyszną kanapkę i sp",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 22
-    },
-    {
-      "name": "Dzisiaj wyindywiduali zostaliśmy si",
-      "time": 0,
-      "isRunning": false,
-      "isDone": true,
-      "isRemoved": true,
-      "id": 23
+      "id": 10
     }
   ]
 }

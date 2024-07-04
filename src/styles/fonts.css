@@ -3,15 +3,17 @@
   src: url(./fonts/Roboto/Roboto-Regular.ttf);
   font-weight: 400;
 }
+
 @font-face {
   font-family: Roboto;
   src: url(./fonts/Roboto/Roboto-Medium.ttf);
   font-weight: 500;
 }
+
 @font-face {
   font-family: Roboto;
   src: url(./fonts/Roboto/Roboto-Bold.ttf);
-    font-weight: 700;
+  font-weight: 700;
 }
 
 * {
@@ -23,20 +25,8 @@
 }
 
 .taskForm__input {
-  font-size: 40px;
+  font-size: 32px;
   color: white;
-}.task__timer {
-  font-size: 64px;
-}
-
-.taskForm__input {
-  font-size: 40px;
-  color: white;
-}
-
-.task__name,
-.btn--submit {
-  font-size: 24px;
 }
 
 .task__name,
@@ -50,16 +40,16 @@
 
 @media (min-width: 700px) {
   .task__timer {
-      font-size: 48px;
-    }
-  
-    .taskForm__input {
-      font-size: 32px;
-      color: white;
-    }
+    font-size: 48px;
+  }
 
-        .task__name,
-        .btn--submit {
-          font-size: 22px;
-        }
+  .taskForm__input {
+    font-size: 24px;
+    color: white;
+  }
+
+  .task__name,
+  .btn--submit {
+    font-size: 22px;
+  }
 }

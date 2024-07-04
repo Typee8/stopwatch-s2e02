@@ -110,17 +110,33 @@ class TasksManager extends React.Component {
     }
   };
 
+  turnOffScrolling() {
+    const body = document.querySelector("body");
+    body.classList.add("no-scroll");
+  }
+
+  turnOnScrolling() {
+    const body = document.querySelector("body");
+    body.classList.remove("no-scroll");
+  }
+
   NewTask() {
     const { isTaskFormShown } = this.state;
-    let content;
 
     if (isTaskFormShown) {
-      content = <>{this.TaskForm()}</>;
+      this.turnOffScrolling();
+      return (
+        <>
+          <section className="newTask">
+            <div className="newTask__container">{this.TaskForm()}</div>
+          </section>
+          <section className="addTask">{this.BtnAdd()}</section>
+        </>
+      );
     } else {
-      content = <>{this.BtnAdd()}</>;
+      this.turnOnScrolling();
+      return <section className="addTask">{this.BtnAdd()}</section>;
     }
-
-    return <section className="newTask">{content}</section>;
   }
 
   TaskForm() {
@@ -135,7 +151,7 @@ class TasksManager extends React.Component {
           onFocus={this.inputTaskFormValue}
           onBlur={(evt) => this.defaultTaskFormValue(evt)}
           onChange={this.putNameToState}
-          maxLength="33"
+          maxLength="35"
         />
         <input className="btn btn--submit" type="submit" />
       </form>

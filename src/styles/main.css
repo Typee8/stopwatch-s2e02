@@ -3,12 +3,17 @@
 }
 
 body {
-    background-color: black;
-    color: white;
-    margin: 0;
+  background-color: black;
+  color: white;
+  margin: 0;
+}
+
+.no-scroll {
+  overflow: hidden;
 }
 
 .root__wrapper {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
@@ -16,7 +21,8 @@ body {
 }
 
 .task,
-.newTask {
+.addTask,
+.newTask__container {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -28,8 +34,24 @@ body {
   background-color: rgb(31, 31, 31);
 }
 
+.addTask {
+  z-index: 999;
+}
+
 .newTask {
-  justify-content: unset;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.newTask__container {
+  width: unset;
+  margin: 100vh 20px 20px 20px;
+  transform: translate(0, calc(-100% - 20px));
 }
 
 .task__footer {
@@ -61,12 +83,12 @@ body {
 .taskForm__input {
   margin-top: 50px;
   width: 80%;
-/*   height: 140px; */
+  /*   height: 140px; */
   border: none;
   outline: none;
   background: none;
   text-align: center;
-/*   resize: none; */
+  /*   resize: none; */
   overflow: hidden;
 }
 

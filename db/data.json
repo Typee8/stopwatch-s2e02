@@ -107,34 +107,82 @@
     {
       "name": "Posprzątać w pokoju gościnnym",
       "time": 0,
-      "isRunning": true,
-      "isDone": false,
-      "isRemoved": false,
+      "isRunning": false,
+      "isDone": true,
+      "isRemoved": true,
       "id": 14
     },
     {
       "name": "Przeanalizować dzieła sztuki w ko",
       "time": 0,
       "isRunning": false,
-      "isDone": false,
-      "isRemoved": false,
+      "isDone": true,
+      "isRemoved": true,
       "id": 15
     },
     {
       "name": "Zrobić i zjeść obiad",
       "time": 0,
-      "isRunning": true,
-      "isDone": false,
-      "isRemoved": false,
+      "isRunning": false,
+      "isDone": true,
+      "isRemoved": true,
       "id": 16
     },
     {
       "name": "Przed  użyciem skonsultuj się z l",
       "time": 0,
       "isRunning": false,
-      "isDone": false,
-      "isRemoved": false,
+      "isDone": true,
+      "isRemoved": true,
       "id": 17
+    },
+    {
+      "name": "New Task",
+      "time": 0,
+      "isRunning": false,
+      "isDone": true,
+      "isRemoved": true,
+      "id": 18
+    },
+    {
+      "name": "New Task",
+      "time": 0,
+      "isRunning": false,
+      "isDone": true,
+      "isRemoved": true,
+      "id": 19
+    },
+    {
+      "name": "Przed użyciem skonsultować się z lekarze",
+      "time": 0,
+      "isRunning": false,
+      "isDone": true,
+      "isRemoved": true,
+      "id": 20
+    },
+    {
+      "name": "Nfjdjdjdjdjdkkdjdkdkkdkdkdkksdkkdkd",
+      "time": 0,
+      "isRunning": false,
+      "isDone": true,
+      "isRemoved": true,
+      "id": 21
+    },
+    {
+      "name": "Dzisiaj zjadłem pyszną kanapkę i sp",
+      "time": 0,
+      "isRunning": false,
+      "isDone": true,
+      "isRemoved": true,
+      "id": 22
+    },
+    {
+      "name": "Dzisiaj wyindywiduali zostaliśmy si",
+      "time": 0,
+      "isRunning": false,
+      "isDone": true,
+      "isRemoved": true,
+      "id": 23
     }
   ]
 }

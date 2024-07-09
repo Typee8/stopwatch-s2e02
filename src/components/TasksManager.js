@@ -214,6 +214,7 @@ class TasksManager extends React.Component {
   }
 
   timerStartCount(taskID) {
+    console.log(this.timerStartCount);
     const { tasks } = this.state;
     const copyTasks = this.createDeepCopy(tasks.map((item) => item));
     const currentTask = copyTasks.filter((item) => item.id === taskID);
@@ -227,82 +228,47 @@ class TasksManager extends React.Component {
         item.time = time;
       }
     });
+
     this.setState({ tasks: copyTasks });
   }
 
-  doesIntervalExists(id) {
-    const result = this.intervalIDList.some((item) => item.id === id);
-    console.log(result);
-    return result;
-  }
-
-  handleTaskStartPause = (evt) => {
+  handleTaskStart = (evt) => {
     const taskID = evt.currentTarget.parentElement.parentElement.id;
 
-    if (this.doesIntervalExists(taskID)) {
-      this.removeTimeInterval(taskID);
-      const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
-        isRunning: false,
-      });
-      this.updateTaskData(taskID, currentTask, updatedTasks);
-    } else {
-      const intervalID = setInterval(
-        this.timerStartCount.bind(this, taskID),
-        1000
-      );
+    const intervalID = setInterval(
+      this.timerStartCount.bind(this, taskID),
+      1000
+    );
 
-      this.intervalIDList.push({ intervalID, id: taskID });
-      const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
-        isRunning: true,
-      });
-      this.updateTaskData(taskID, currentTask, updatedTasks);
-    }
+    this.intervalIDList.push({ intervalID, id: taskID });
+    const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
+      isRunning: true,
+    });
+    this.updateTaskData(taskID, currentTask, updatedTasks);
   };
 
-  handleTaskStart = evt => {
-        const taskID = evt.currentTarget.parentElement.parentElement.id;
+  handleTaskPause = (evt) => {
+    const taskID = evt.currentTarget.parentElement.parentElement.id;
 
-        const intervalID = setInterval(
-          this.timerStartCount.bind(this, taskID),
-          1000
-        );
-
-        this.intervalIDList.push({ intervalID, id: taskID });
-        const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
-          isRunning: true,
-        });
-        this.updateTaskData(taskID, currentTask, updatedTasks);
-  }
-
-  handleTaskPause = evt => {
-        const taskID = evt.currentTarget.parentElement.parentElement.id;
-
-        this.removeTimeInterval(taskID);
-        const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
-          isRunning: false,
-        });
-        this.updateTaskData(taskID, currentTask, updatedTasks);
-  }
+    this.removeTimeInterval(taskID);
+    console.log(this.intervalIDList);
+    const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
+      isRunning: false,
+    });
+    this.updateTaskData(taskID, currentTask, updatedTasks);
+  };
 
   removeTimeInterval(taskID) {
     const { intervalIDList } = this;
     const matchedIntervals = intervalIDList
-      .filter((item) => item.id === taskID)
-      .map((item) => item.intervalID);
+      .filter((item) => item.id === taskID);
 
-    matchedIntervals.forEach((interval) => {
-      clearInterval(interval);
+    matchedIntervals.forEach((item) => {
+      clearInterval(item.intervalID);
 
-      const indexOfInterval = intervalIDList.map((item) => {
-        if (item.id === taskID) {
-          const index = intervalIDList.indexOf(item);
-          return index;
-        }
-      });
-
+      const indexOfInterval = intervalIDList.indexOf(item);
       intervalIDList.splice(indexOfInterval, 1);
     });
-    console.log(intervalIDList);
   }
 
   isTaskRunning(taskID) {
@@ -337,7 +303,6 @@ class TasksManager extends React.Component {
     });
 
     const updatedTasks = copyTasks;
-
     return [currentTask, updatedTasks];
   }
 
@@ -442,11 +407,11 @@ class TasksManager extends React.Component {
       return;
     }
 
-    if (item.time === 0) {
+    if (item.time === 0 && !item.isRunning) {
       return <>{this.BtnStart()}</>;
     }
 
-    if (item.isRunning || this.doesIntervalExists(item.id)) {
+    if (item.isRunning) {
       return <>{this.BtnPause()}</>;
     }
 

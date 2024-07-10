@@ -478,9 +478,6 @@ class TasksManager extends React.Component {
   }
 
   render() {
-    /* 1) tasksActive exists
-  2) tasksDone exists
-  3) both exists */
 
     if (this.isThereAnActiveTask() && this.isThereADoneTask()) {
       return (

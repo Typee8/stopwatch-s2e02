@@ -81,11 +81,26 @@ class TasksManager extends React.Component {
     const { tasks } = this.state;
 
     return tasks.map((item) => {
-      if (item.isRemoved === true) {
+      if (item.isRemoved || item.isDone) {
         return;
       }
 
       return <>{this.TaskTemplate(item)}</>;
+    });
+  }
+
+  renderTaskDone() {
+    const { tasks } = this.state;
+
+    return tasks.map((item) => {
+      if (item.isDone) {
+        return (
+          <section id={item.id} className="task task--done">
+            {this.BtnRemove()}
+            {this.TaskDoneHeader(item)}
+          </section>
+        );
+      }
     });
   }
 
@@ -260,8 +275,9 @@ class TasksManager extends React.Component {
 
   removeTimeInterval(taskID) {
     const { intervalIDList } = this;
-    const matchedIntervals = intervalIDList
-      .filter((item) => item.id === taskID);
+    const matchedIntervals = intervalIDList.filter(
+      (item) => item.id === taskID
+    );
 
     matchedIntervals.forEach((item) => {
       clearInterval(item.intervalID);
@@ -436,6 +452,15 @@ class TasksManager extends React.Component {
     );
   }
 
+  TaskDoneHeader(item) {
+        return (
+          <header className="task__header">
+            <div className="task__name">{item.name}</div>
+            <div className="task__timer task__timer--done">{this.timerShowTime(item.id)}</div>
+          </header>
+        );
+  }
+
   TaskTemplate(item) {
     return (
       <section id={item.id} className="task">
@@ -452,8 +477,15 @@ class TasksManager extends React.Component {
     if (tasks.length > 0) {
       return (
         <section className="root__wrapper">
-          {this.renderTask()}
-          {this.NewTask()}
+          <section className="tasksActive">
+            {this.renderTask()}
+            {this.NewTask()}
+          </section>
+          <section className="tasksDone">
+            <h2 className="tasksDone__header">
+              Finished Tasks
+            </h2>
+            {this.renderTaskDone()}</section>
         </section>
       );
     } else {

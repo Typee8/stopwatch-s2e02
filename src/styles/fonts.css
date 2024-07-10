@@ -21,10 +21,11 @@
 }
 
 .task__timer {
-  font-size: 64px;
+  font-size: 80px;
 }
 
-.taskForm__input {
+.taskForm__input,
+.tasksDone__header {
   font-size: 32px;
   color: white;
 }
@@ -38,18 +39,30 @@
   font-weight: 500;
 }
 
-@media (min-width: 700px) {
+@media (min-width: 760px) {
   .task__timer {
-    font-size: 48px;
+    font-size: 64px;
   }
 
-  .taskForm__input {
+  .taskForm__input,
+  .tasksDone__header {
     font-size: 24px;
-    color: white;
+
   }
 
   .task__name,
   .btn--submit {
     font-size: 22px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .task__timer {
+    font-size: 56px;
+  }
+
+  .task__name,
+  .btn--submit {
+    font-size: 20px;
   }
 }

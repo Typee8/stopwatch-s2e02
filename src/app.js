@@ -7,6 +7,7 @@ import "./styles/reset.css";
 import "./styles/fonts.css";
 import "./styles/main.css";
 import "./styles/tablet.css";
+import "./styles/desktop.css";
 import "./styles/buttons.css";
 
 const App = () => <TasksManager />;

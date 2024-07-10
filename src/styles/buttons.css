@@ -43,7 +43,7 @@
 
 .btn--submit {
   position: absolute;
-  bottom: 20px;
+  bottom: 40px;
 }
 
 .btn__icon {
@@ -52,8 +52,8 @@
 }
 
 .btn__icon--small {
-  width: 20px;
-  height: 20px;
+  width: calc(var(--btn-width-default) * 0.5);
+  height: calc(var(--btn-height-default) * 0.5);
 }
 
 .btn--remove {
@@ -69,7 +69,7 @@
   margin-right: 40px;
 }
 
-@media (min-width: 700px) {
+@media (min-width: 760px) {
   :root {
     --btn-width-default: 40px;
     --btn-height-default: 40px;
@@ -77,5 +77,12 @@
 
   .btn--end {
     margin-right: 20px;
+  }
+}
+
+@media (min-width: 1400px) {
+  :root {
+    --btn-width-default: 35px;
+    --btn-height-default: 35px;
   }
 }

@@ -93,14 +93,16 @@ class TasksManager extends React.Component {
     const { tasks } = this.state;
 
     return tasks.map((item) => {
-      if (item.isDone) {
-        return (
-          <section id={item.id} className="task task--done">
-            {this.BtnRemove()}
-            {this.TaskDoneHeader(item)}
-          </section>
-        );
+      if (item.isRemoved || !item.isDone) {
+        return;
       }
+
+      return (
+        <section id={item.id} className="task task--done">
+          {this.BtnRemove()}
+          {this.TaskDoneHeader(item)}
+        </section>
+      );
     });
   }
 
@@ -256,7 +258,7 @@ class TasksManager extends React.Component {
     );
 
     this.intervalIDList.push({ intervalID, id: taskID });
-    const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
+    const { currentTask, updatedTasks } = this.getUpdatedTaskData(taskID, {
       isRunning: true,
     });
     this.updateTaskData(taskID, currentTask, updatedTasks);
@@ -267,7 +269,7 @@ class TasksManager extends React.Component {
 
     this.removeTimeInterval(taskID);
     console.log(this.intervalIDList);
-    const [currentTask, updatedTasks] = this.getUpdatedTaskData(taskID, {
+    const { currentTask, updatedTasks } = this.getUpdatedTaskData(taskID, {
       isRunning: false,
     });
     this.updateTaskData(taskID, currentTask, updatedTasks);
@@ -301,6 +303,12 @@ class TasksManager extends React.Component {
     });
   }
 
+  removeTask(taskID, updatedTasks) {
+    this.setState({ tasks: updatedTasks }, () => {
+      this.serverAPI.deleteData(taskID);
+    });
+  }
+
   getUpdatedTaskData(taskID, ...props) {
     const { tasks } = this.state;
     const copyTasks = this.createDeepCopy(tasks.map((item) => item));
@@ -319,7 +327,7 @@ class TasksManager extends React.Component {
     });
 
     const updatedTasks = copyTasks;
-    return [currentTask, updatedTasks];
+    return { currentTask, updatedTasks };
   }
 
   createDeepCopy(item) {
@@ -335,7 +343,7 @@ class TasksManager extends React.Component {
       this.removeTimeInterval(taskID);
     }
 
-    const [currentTask, updatedTasks] = this.getUpdatedTaskData(
+    const { currentTask, updatedTasks } = this.getUpdatedTaskData(
       taskID,
       { isRunning: false },
       {
@@ -351,15 +359,11 @@ class TasksManager extends React.Component {
       this.removeTimeInterval(taskID);
     }
 
-    const [currentTask, updatedTasks] = this.getUpdatedTaskData(
-      taskID,
-      {
-        isRunning: false,
-      },
-      { isDone: true },
-      { isRemoved: true }
-    );
-    this.updateTaskData(taskID, currentTask, updatedTasks);
+    const { updatedTasks } = this.getUpdatedTaskData(taskID, {
+      isRemoved: true,
+    });
+
+    this.removeTask(taskID, updatedTasks);
   };
 
   BtnFormRemove() {
@@ -453,12 +457,14 @@ class TasksManager extends React.Component {
   }
 
   TaskDoneHeader(item) {
-        return (
-          <header className="task__header">
-            <div className="task__name">{item.name}</div>
-            <div className="task__timer task__timer--done">{this.timerShowTime(item.id)}</div>
-          </header>
-        );
+    return (
+      <header className="task__header">
+        <div className="task__name">{item.name}</div>
+        <div className="task__timer task__timer--done">
+          {this.timerShowTime(item.id)}
+        </div>
+      </header>
+    );
   }
 
   TaskTemplate(item) {
@@ -472,9 +478,11 @@ class TasksManager extends React.Component {
   }
 
   render() {
-    const { tasks } = this.state;
+    /* 1) tasksActive exists
+  2) tasksDone exists
+  3) both exists */
 
-    if (tasks.length > 0) {
+    if (this.isThereAnActiveTask() && this.isThereADoneTask()) {
       return (
         <section className="root__wrapper">
           <section className="tasksActive">
@@ -482,15 +490,55 @@ class TasksManager extends React.Component {
             {this.NewTask()}
           </section>
           <section className="tasksDone">
-            <h2 className="tasksDone__header">
-              Finished Tasks
-            </h2>
-            {this.renderTaskDone()}</section>
+            <h2 className="tasksDone__header">Finished Tasks</h2>
+            {this.renderTaskDone()}
+          </section>
         </section>
       );
-    } else {
-      return <>{this.NewTask()}</>;
     }
+
+    if (this.isThereAnActiveTask()) {
+      return (
+        <section className="root__wrapper">
+          <section className="tasksActive">
+            {this.renderTask()}
+            {this.NewTask()}
+          </section>
+        </section>
+      );
+    }
+
+    if (this.isThereADoneTask()) {
+      return (
+        <section className="root__wrapper">
+          <section className="tasksActive">{this.NewTask()}</section>
+          <section className="tasksDone">
+            <h2 className="tasksDone__header">Finished Tasks</h2>
+            {this.renderTaskDone()}
+          </section>
+        </section>
+      );
+    }
+
+    return (
+      <section className="root__wrapper">
+        <section className="tasksActive">{this.NewTask()}</section>
+      </section>
+    );
+  }
+
+  isThereAnActiveTask() {
+    const { tasks } = this.state;
+    const doesExist = tasks.some((item) => !item.isDone && !item.isRemoved);
+
+    return doesExist;
+  }
+
+  isThereADoneTask() {
+    const { tasks } = this.state;
+    const doesExist = tasks.some((item) => item.isDone && !item.isRemoved);
+
+    return doesExist;
   }
 }
 

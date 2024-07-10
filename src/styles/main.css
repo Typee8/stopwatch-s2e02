@@ -39,10 +39,6 @@ body {
   background-color: rgb(31, 31, 31);
 }
 
-/* .tasksDone {
-background: linear-gradient(180deg, #001400 0%, #025c02 100%);
-} */
-
 .tasksDone__header {
   width: 100%;
   padding: 20px;

@@ -53,6 +53,23 @@ class ServerAPI {
     }
   }
 
+  async deleteData(id) {
+    const options = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const response = await fetch(`${this.url}/${id}`, options);
+
+    if (response.ok) {
+      console.log("DELETE - successful");
+    } else {
+      throw new Error(`DELETE - failed, status: ${response.status}`);
+    }
+  }
+
   eachIDtoString(response) {
     const processedResponse = response.map((item) => {
       if (item.id) {

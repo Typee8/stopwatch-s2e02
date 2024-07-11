@@ -1,3 +1,15 @@
 {
-  "data": []
+  "data": [
+    {
+      "name": "New Task",
+      "time": {
+        "start": 1720699356178,
+        "current": 12
+      },
+      "isRunning": false,
+      "isDone": false,
+      "isRemoved": false,
+      "id": 1
+    }
+  ]
 }

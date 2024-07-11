@@ -239,13 +239,13 @@ class TasksManager extends React.Component {
     const copyTasks = this.createDeepCopy(tasks.map((item) => item));
     const currentTask = copyTasks.filter((item) => item.id === taskID);
 
-    let { time } = currentTask[0];
+    let { current } = currentTask[0].time;
 
-    time++;
+    current++;
 
     copyTasks.forEach((item) => {
       if (item.id === taskID) {
-        item.time = time;
+        item.time.current = current;
       }
     });
 
@@ -263,6 +263,9 @@ class TasksManager extends React.Component {
     this.intervalIDList.push({ intervalID, id: taskID });
     const { currentTask, updatedTasks } = this.getUpdatedTaskData(taskID, {
       isRunning: true,
+      time: {
+        start: Date.now(),
+      },
     });
     this.updateTaskData(taskID, currentTask, updatedTasks);
   };
@@ -312,7 +315,7 @@ class TasksManager extends React.Component {
     });
   }
 
-  getUpdatedTaskData(taskID, ...props) {
+  getUpdatedTaskData(taskID, props) {
     const { tasks } = this.state;
     const copyTasks = this.createDeepCopy(tasks.map((item) => item));
 
@@ -320,12 +323,7 @@ class TasksManager extends React.Component {
 
     copyTasks.forEach((item) => {
       if (item.id === taskID) {
-        props.forEach((ele) => {
-          const key = Object.keys(ele);
-          item[key] = ele[key];
-        });
-
-        currentTask = { ...item };
+        currentTask = this.changeObjectValues(item, props);
       }
     });
 
@@ -334,13 +332,19 @@ class TasksManager extends React.Component {
   }
 
   changeObjectValues(obj, values) {
+    console.log(values);
     for (const key in values) {
       if (this.isPlainFilledObject(values[key])) {
-        Object.assign(obj[key], this.changeObjectValues(obj[key], values[key]))
+        console.log("YES");
+        this.changeObjectValues(obj[key], values[key]);
+      } else {
+        obj[key] = values[key];
       }
 
-      Object.assign(obj[key] || {}, values[key]);
+      console.log(obj);
     }
+    console.log(obj);
+    return obj;
   }
 
   isPlainFilledObject(obj) {
@@ -365,13 +369,10 @@ class TasksManager extends React.Component {
       this.removeTimeInterval(taskID);
     }
 
-    const { currentTask, updatedTasks } = this.getUpdatedTaskData(
-      taskID,
-      { isRunning: false },
-      {
-        isDone: true,
-      }
-    );
+    const { currentTask, updatedTasks } = this.getUpdatedTaskData(taskID, {
+      isRunning: false,
+      isDone: true,
+    });
     this.updateTaskData(taskID, currentTask, updatedTasks);
   };
 

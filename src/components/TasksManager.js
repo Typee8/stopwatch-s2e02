@@ -236,16 +236,15 @@ class TasksManager extends React.Component {
   timerStartCount(taskID) {
     console.log(this.timerStartCount);
     const { tasks } = this.state;
-    const copyTasks = this.createDeepCopy(tasks.map((item) => item));
+    const copyTasks = this.createDeepCopy(tasks);
     const currentTask = copyTasks.filter((item) => item.id === taskID);
 
-    let { current } = currentTask[0].time;
-
-    current++;
+    let { current, start } = currentTask[0].time;
 
     copyTasks.forEach((item) => {
       if (item.id === taskID) {
-        item.time.current = current;
+        item.time.current = current + parseInt((Date.now() - start) / 1000);
+        console.log(parseInt((Date.now() - start) / 1000));
       }
     });
 

@@ -60,7 +60,10 @@ class TasksManager extends React.Component {
 
     const task = {
       name: taskName.input.length === 0 ? taskName.default : taskName.input,
-      time: 0,
+      time: {
+        start: 0,
+        current: 0,
+      },
       isRunning: false,
       isDone: false,
       isRemoved: false,
@@ -193,8 +196,8 @@ class TasksManager extends React.Component {
   timerShowTime(id) {
     const currentTask = this.state.tasks.filter((item) => item.id === id);
 
-    const { time } = currentTask[0];
-    const [seconds, minutes, hours] = this.parseTimeForDisplay(time);
+    const { current } = currentTask[0].time;
+    const [seconds, minutes, hours] = this.parseTimeForDisplay(current);
 
     let timeDisplay;
 
@@ -330,6 +333,25 @@ class TasksManager extends React.Component {
     return { currentTask, updatedTasks };
   }
 
+  changeObjectValues(obj, values) {
+    for (const key in values) {
+      if (this.isPlainFilledObject(values[key])) {
+        Object.assign(obj[key], this.changeObjectValues(obj[key], values[key]))
+      }
+
+      Object.assign(obj[key] || {}, values[key]);
+    }
+  }
+
+  isPlainFilledObject(obj) {
+    return (
+      obj !== null &&
+      typeof obj === "object" &&
+      Object.getPrototypeOf(obj) === Object.prototype &&
+      Object.keys(obj).length > 0
+    );
+  }
+
   createDeepCopy(item) {
     const deepCopy = JSON.parse(JSON.stringify(item));
 
@@ -427,7 +449,7 @@ class TasksManager extends React.Component {
       return;
     }
 
-    if (item.time === 0 && !item.isRunning) {
+    if (item.time.current === 0 && !item.isRunning) {
       return <>{this.BtnStart()}</>;
     }
 
@@ -478,7 +500,6 @@ class TasksManager extends React.Component {
   }
 
   render() {
-
     if (this.isThereAnActiveTask() && this.isThereADoneTask()) {
       return (
         <section className="root__wrapper">

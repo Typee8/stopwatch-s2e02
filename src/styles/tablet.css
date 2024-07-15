@@ -10,7 +10,8 @@
 
   .task,
   .addTask {
-    height: 400px;
+    --numberOfTasksPerWindow: 3;
+    height: var(--taskHeight);
   }
 
   .tasksDone__header {

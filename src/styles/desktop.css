@@ -6,7 +6,8 @@
 
     .task,
     .addTask {
-      height: 350px;
+    --numberOfTasksPerWindow: 4;
+      height: var(--taskHeight);
     }
 
     .newTask__container {

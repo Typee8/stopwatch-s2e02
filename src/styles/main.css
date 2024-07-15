@@ -2,6 +2,10 @@
   background-color: unset;
 }
 
+:root {
+  --windowVH: 100vh;
+}
+
 body {
   color: white;
   margin: 0;
@@ -9,7 +13,7 @@ body {
 
 .root__wrapper {
   background-color: black;
-  min-height: 100vh;
+  min-height: var(--windowVH);
 }
 
 .no-scroll {
@@ -18,25 +22,42 @@ body {
 
 .tasksActive,
 .tasksDone {
+  --tasks-gap: 20px;
+  --tasks-padding: 20px;
+
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  padding: 20px;
+  gap: var(--tasks-gap);
+  padding: var(--tasks-padding);
 }
 
 .task,
 .addTask,
 .newTask__container {
+  --numberOfTasksPerWindow: 2;
+  --taskHeight: calc(var(--windowVH) / var(--numberOfTasksPerWindow) - (var(--tasks-gap) + var(--tasks-gap) / var(--numberOfTasksPerWindow)));
+
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   width: 100%;
-  height: 500px;
+  min-height: 300px;
+  height: var(--taskHeight);
   padding: 20px;
   border-radius: 20px;
   background-color: rgb(31, 31, 31);
+  transition: all 0.3s ease;
+}
+
+@media (max-height: 400px) {
+  .task,
+  .addTask,
+  .newTask__container {
+      --numberOfTasksPerWindow: 1;
+    height: var(--taskHeight);
+  }
 }
 
 .tasksDone__header {
@@ -59,13 +80,13 @@ body {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: var(--windowVH);
   background-color: rgba(0, 0, 0, 0.6);
 }
 
 .newTask__container {
   width: unset;
-  margin: 100vh 20px 20px 20px;
+  margin: var(--windowVH) 20px 20px 20px;
   transform: translate(0, calc(-100% - 20px));
 }
 
@@ -79,7 +100,7 @@ body {
 
 .task__timer {
   position: absolute;
-  top: 45%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
 }

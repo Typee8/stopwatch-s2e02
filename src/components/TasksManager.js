@@ -1,5 +1,6 @@
 import React from "react";
 import ServerAPI from "./ServerAPI";
+import viewportAdjust from "./viewportAdjust";
 
 function importAllSVG() {
   const r = require.context("../styles/svg-icons", false, /\.svg$/);
@@ -63,6 +64,7 @@ class TasksManager extends React.Component {
       time: {
         start: 0,
         current: 0,
+        total: 0,
       },
       isRunning: false,
       isDone: false,
@@ -78,6 +80,10 @@ class TasksManager extends React.Component {
   async componentDidMount() {
     const data = await this.serverAPI.fetchData();
     this.setState({ tasks: data });
+  }
+
+  componentDidUpdate() {
+    viewportAdjust();
   }
 
   renderTask() {
@@ -193,11 +199,12 @@ class TasksManager extends React.Component {
     );
   }
 
-  timerShowTime(id) {
+  showTime(id) {
     const currentTask = this.state.tasks.filter((item) => item.id === id);
 
-    const { current } = currentTask[0].time;
-    const [seconds, minutes, hours] = this.parseTimeForDisplay(current);
+    const { current, total } = currentTask[0].time;
+    const time = current + total;
+    const [seconds, minutes, hours] = this.parseTimeForDisplay(time);
 
     let timeDisplay;
 
@@ -234,21 +241,16 @@ class TasksManager extends React.Component {
   }
 
   timerStartCount(taskID) {
-    console.log(this.timerStartCount);
-    const { tasks } = this.state;
-    const copyTasks = this.createDeepCopy(tasks);
-    const currentTask = copyTasks.filter((item) => item.id === taskID);
+    const { currentTask } = this.getUpdatedTaskData(taskID);
+    const { start } = currentTask.time;
 
-    let { current, start } = currentTask[0].time;
-
-    copyTasks.forEach((item) => {
-      if (item.id === taskID) {
-        item.time.current = current + parseInt((Date.now() - start) / 1000);
-        console.log(parseInt((Date.now() - start) / 1000));
-      }
+    const { updatedTasks } = this.getUpdatedTaskData(taskID, {
+      time: {
+        current: parseInt((Date.now() - start) / 1000),
+      },
     });
 
-    this.setState({ tasks: copyTasks });
+    this.setState({ tasks: updatedTasks });
   }
 
   handleTaskStart = (evt) => {
@@ -273,9 +275,14 @@ class TasksManager extends React.Component {
     const taskID = evt.currentTarget.parentElement.parentElement.id;
 
     this.removeTimeInterval(taskID);
-    console.log(this.intervalIDList);
+
+    const { time } = this.getTaskData(taskID);
     const { currentTask, updatedTasks } = this.getUpdatedTaskData(taskID, {
       isRunning: false,
+      time: {
+        current: 0,
+        total: time.total + time.current,
+      },
     });
     this.updateTaskData(taskID, currentTask, updatedTasks);
   };
@@ -314,9 +321,24 @@ class TasksManager extends React.Component {
     });
   }
 
+  getTaskData(taskID) {
+    const { tasks } = this.state;
+    const copyTasks = this.createDeepCopy(tasks);
+
+    let task;
+
+    copyTasks.forEach((item) => {
+      if (item.id === taskID) {
+        task = item;
+      }
+    });
+
+    return task;
+  }
+
   getUpdatedTaskData(taskID, props) {
     const { tasks } = this.state;
-    const copyTasks = this.createDeepCopy(tasks.map((item) => item));
+    const copyTasks = this.createDeepCopy(tasks);
 
     let currentTask = null;
 
@@ -449,7 +471,7 @@ class TasksManager extends React.Component {
       return;
     }
 
-    if (item.time.current === 0 && !item.isRunning) {
+    if (item.time.total === 0 && !item.isRunning) {
       return <>{this.BtnStart()}</>;
     }
 
@@ -473,7 +495,7 @@ class TasksManager extends React.Component {
     return (
       <header className="task__header">
         <div className="task__name">{item.name}</div>
-        <div className="task__timer">{this.timerShowTime(item.id)}</div>
+        <div className="task__timer">{this.showTime(item.id)}</div>
       </header>
     );
   }
@@ -483,7 +505,7 @@ class TasksManager extends React.Component {
       <header className="task__header">
         <div className="task__name">{item.name}</div>
         <div className="task__timer task__timer--done">
-          {this.timerShowTime(item.id)}
+          {this.showTime(item.id)}
         </div>
       </header>
     );
@@ -500,49 +522,40 @@ class TasksManager extends React.Component {
   }
 
   render() {
-    if (this.isThereAnActiveTask() && this.isThereADoneTask()) {
-      return (
-        <section className="root__wrapper">
-          <section className="tasksActive">
-            {this.renderTask()}
-            {this.NewTask()}
-          </section>
-          <section className="tasksDone">
-            <h2 className="tasksDone__header">Finished Tasks</h2>
-            {this.renderTaskDone()}
-          </section>
-        </section>
-      );
-    }
-
-    if (this.isThereAnActiveTask()) {
-      return (
-        <section className="root__wrapper">
-          <section className="tasksActive">
-            {this.renderTask()}
-            {this.NewTask()}
-          </section>
-        </section>
-      );
-    }
-
-    if (this.isThereADoneTask()) {
-      return (
-        <section className="root__wrapper">
-          <section className="tasksActive">{this.NewTask()}</section>
-          <section className="tasksDone">
-            <h2 className="tasksDone__header">Finished Tasks</h2>
-            {this.renderTaskDone()}
-          </section>
-        </section>
-      );
-    }
-
     return (
       <section className="root__wrapper">
-        <section className="tasksActive">{this.NewTask()}</section>
+        {this.TasksActive()}
+        {this.TasksDone()}
       </section>
     );
+  }
+
+  TasksActive() {
+    if (this.isThereAnActiveTask()) {
+      return (
+        <section className="tasksActive">
+          {this.renderTask()}
+          {this.NewTask()}
+        </section>
+      );
+    } else {
+      return (
+        <section className="tasksActive">
+          {this.NewTask()}
+        </section>
+      );
+    }
+  }
+
+  TasksDone() {
+    if(this.isThereADoneTask()) {
+      return (
+        <section className="tasksDone">
+          <h2 className="tasksDone__header">Finished Tasks</h2>
+          {this.renderTaskDone()}
+        </section>
+      );
+    }
   }
 
   isThereAnActiveTask() {

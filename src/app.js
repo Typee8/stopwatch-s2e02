@@ -14,5 +14,3 @@ const App = () => <TasksManager />;
 
 const root = createRoot(document.querySelector("#root"));
 root.render(<App />);
-
-window.addEventListener('resize', () => console.log(window.innerWidth));

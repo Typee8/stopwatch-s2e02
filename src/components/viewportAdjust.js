@@ -1,9 +1,5 @@
 function viewportAdjust() {
   setRealVieportHeight();
-
-  window.addEventListener("resize", () => {
-    setRealVieportHeight();
-  });
 }
 
 function setRealVieportHeight() {

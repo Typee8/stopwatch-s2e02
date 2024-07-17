@@ -48,14 +48,14 @@ body {
   padding: 20px;
   border-radius: 20px;
   background-color: rgb(31, 31, 31);
-  transition: all 0.3s ease;
 }
 
 @media (max-height: 400px) {
+
   .task,
   .addTask,
   .newTask__container {
-      --numberOfTasksPerWindow: 1;
+    --numberOfTasksPerWindow: 1;
     height: var(--taskHeight);
   }
 }
@@ -91,11 +91,9 @@ body {
 }
 
 .task__footer {
-  display: grid;
-  grid-template-columns: 1fr 90px 1fr;
-  justify-items: center;
-  align-items: center;
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .task__timer {
@@ -132,7 +130,38 @@ body {
   overflow: hidden;
 }
 
-.task__name {
-  width: 80%;
+.task__name,
+.taskRemover__header {
+  width: 85%;
   word-wrap: break-word;
+}
+
+.taskRemover {
+  z-index: 1000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: rgb(80, 80, 80);
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.taskRemover--hidden {
+  opacity: 0;
+  visibility: hidden;
+  background-color: rgb(140, 140, 140);
+}
+
+.taskRemover__container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 20px;
 }

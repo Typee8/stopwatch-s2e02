@@ -12,6 +12,7 @@
   border: none;
   border-radius: 50%;
   background-color: whitesmoke;
+  transition: all 0.2s ease;
 }
 
 .btn--start,
@@ -35,7 +36,9 @@
 }
 
 .btn--pause,
-.btn--submit {
+.btn--submit,
+.btn--end,
+.btn--remove {
   width: calc(var(--btn-width-default) * 2.8);
   height: calc(var(--btn-height-default) * 1.6);
   border-radius: 20px;
@@ -56,7 +59,13 @@
   height: calc(var(--btn-height-default) * 0.5);
 }
 
-.btn--remove {
+.btn__icon--medium {
+  width: calc(var(--btn-width-default) * 0.6);
+  height: calc(var(--btn-height-default) * 0.6);
+}
+
+.btn--taskRemover,
+.btn--formRemove {
   position: absolute;
   top: 15px;
   right: 15px;
@@ -64,19 +73,14 @@
   height: calc(var(--btn-height-default) * 0.8);
 }
 
-.btn--end {
-  justify-self: right;
-  margin-right: 40px;
+.btn--taskRemover {
+  z-index: 1001;
 }
 
 @media (min-width: 760px) {
   :root {
     --btn-width-default: 40px;
     --btn-height-default: 40px;
-  }
-
-  .btn--end {
-    margin-right: 20px;
   }
 }
 

@@ -108,7 +108,8 @@ class TasksManager extends React.Component {
 
       return (
         <section id={item.id} className="task task--done">
-          {this.BtnRemove()}
+          {this.BtnTaskRemover()}
+          {this.TaskDoneRemover()}
           {this.TaskDoneHeader(item)}
         </section>
       );
@@ -254,7 +255,7 @@ class TasksManager extends React.Component {
   }
 
   handleTaskStart = (evt) => {
-    const taskID = evt.currentTarget.parentElement.parentElement.id;
+    const taskID = evt.currentTarget.closest("[id]").id;
 
     const intervalID = setInterval(
       this.timerStartCount.bind(this, taskID),
@@ -272,7 +273,7 @@ class TasksManager extends React.Component {
   };
 
   handleTaskPause = (evt) => {
-    const taskID = evt.currentTarget.parentElement.parentElement.id;
+    const taskID = evt.currentTarget.closest("[id]").id;
 
     this.removeTimeInterval(taskID);
 
@@ -384,7 +385,7 @@ class TasksManager extends React.Component {
   }
 
   handleTaskEnd = (evt) => {
-    const taskID = evt.currentTarget.parentElement.parentElement.id;
+    const taskID = evt.currentTarget.closest("[id]").id;
 
     if (this.isTaskRunning(taskID)) {
       this.removeTimeInterval(taskID);
@@ -398,7 +399,7 @@ class TasksManager extends React.Component {
   };
 
   handleTaskRemove = (evt) => {
-    const taskID = evt.currentTarget.parentElement.id;
+    const taskID = evt.currentTarget.closest("[id]").id;
     if (this.isTaskRunning(taskID)) {
       this.removeTimeInterval(taskID);
     }
@@ -410,9 +411,15 @@ class TasksManager extends React.Component {
     this.removeTask(taskID, updatedTasks);
   };
 
+  showTaskRemover = (evt) => {
+    const taskRemover = evt.currentTarget.parentElement.querySelector(".taskRemover");
+    console.log(taskRemover);
+    taskRemover.classList.toggle("taskRemover--hidden");
+  };
+
   BtnFormRemove() {
     return (
-      <button className="btn btn--remove" onClick={() => this.resetTaskForm()}>
+      <button className="btn btn--formRemove" onClick={() => this.resetTaskForm()}>
         <img className="btn__icon btn__icon--small" src={svgList.cross_icon} />
       </button>
     );
@@ -435,6 +442,18 @@ class TasksManager extends React.Component {
       <button
         className="btn btn--remove"
         onClick={this.handleTaskRemove}
+        disabled={false}
+      >
+        <img className="btn__icon btn__icon--medium" src={svgList.bin_icon} />
+      </button>
+    );
+  }
+
+  BtnTaskRemover() {
+    return (
+      <button
+        className="btn btn--taskRemover"
+        onClick={this.showTaskRemover}
         disabled={false}
       >
         <img className="btn__icon btn__icon--small" src={svgList.cross_icon} />
@@ -461,34 +480,51 @@ class TasksManager extends React.Component {
   BtnEnd() {
     return (
       <button className="btn btn--end" onClick={this.handleTaskEnd}>
-        <img className="btn__icon btn__icon--small" src={svgList.square_icon} />
+        <img
+          className="btn__icon btn__icon--medium"
+          src={svgList.bookmark_icon}
+        />
       </button>
     );
   }
 
   manageBtns(item) {
-    if (item.isRemoved) {
-      return;
-    }
-
-    if (item.time.total === 0 && !item.isRunning) {
-      return <>{this.BtnStart()}</>;
-    }
-
     if (item.isRunning) {
       return <>{this.BtnPause()}</>;
     }
 
-    return (
-      <>
-        {this.BtnEnd()}
-        {this.BtnStart()}
-      </>
-    );
+    return <>{this.BtnStart()}</>;
   }
 
   TaskFooter(item) {
     return <footer className="task__footer">{this.manageBtns(item)}</footer>;
+  }
+
+  TaskRemover() {
+    return (
+      <section className="taskRemover taskRemover--hidden">
+        <h2 className="taskRemover__header">
+          What would you like to do with this task?
+        </h2>
+        <div className="taskRemover__container">
+          {this.BtnEnd()}
+          {this.BtnRemove()}
+        </div>
+      </section>
+    );
+  }
+
+  TaskDoneRemover() {
+        return (
+          <section className="taskRemover taskRemover--hidden">
+            <h2 className="taskRemover__header">
+              What would you like to delete this task?
+            </h2>
+            <div className="taskRemover__container">
+              {this.BtnRemove()}
+            </div>
+          </section>
+        );
   }
 
   TaskHeader(item) {
@@ -514,7 +550,8 @@ class TasksManager extends React.Component {
   TaskTemplate(item) {
     return (
       <section id={item.id} className="task">
-        {this.BtnRemove()}
+        {this.BtnTaskRemover()}
+        {this.TaskRemover()}
         {this.TaskHeader(item)}
         {this.TaskFooter(item)}
       </section>
@@ -539,16 +576,12 @@ class TasksManager extends React.Component {
         </section>
       );
     } else {
-      return (
-        <section className="tasksActive">
-          {this.NewTask()}
-        </section>
-      );
+      return <section className="tasksActive">{this.NewTask()}</section>;
     }
   }
 
   TasksDone() {
-    if(this.isThereADoneTask()) {
+    if (this.isThereADoneTask()) {
       return (
         <section className="tasksDone">
           <h2 className="tasksDone__header">Finished Tasks</h2>

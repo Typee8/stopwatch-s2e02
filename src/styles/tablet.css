@@ -19,10 +19,6 @@
     text-align: start;
   }
 
-  .task__footer {
-    margin: 10px;
-  }
-
   .newTask {
     display: flex;
     justify-content: center;

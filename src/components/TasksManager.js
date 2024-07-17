@@ -80,6 +80,11 @@ class TasksManager extends React.Component {
   async componentDidMount() {
     const data = await this.serverAPI.fetchData();
     this.setState({ tasks: data });
+
+        window.addEventListener("beforeunload", (evt) => {
+          evt.preventDefault();
+          alert("Are you sure you want to leave?");
+        });
   }
 
   componentDidUpdate() {
@@ -263,13 +268,13 @@ class TasksManager extends React.Component {
     );
 
     this.intervalIDList.push({ intervalID, id: taskID });
-    const { currentTask, updatedTasks } = this.getUpdatedTaskData(taskID, {
+    const { updatedTasks } = this.getUpdatedTaskData(taskID, {
       isRunning: true,
       time: {
         start: Date.now(),
       },
     });
-    this.updateTaskData(taskID, currentTask, updatedTasks);
+    this.setState({ tasks: updatedTasks });
   };
 
   handleTaskPause = (evt) => {
@@ -412,14 +417,18 @@ class TasksManager extends React.Component {
   };
 
   showTaskRemover = (evt) => {
-    const taskRemover = evt.currentTarget.parentElement.querySelector(".taskRemover");
+    const taskRemover =
+      evt.currentTarget.parentElement.querySelector(".taskRemover");
     console.log(taskRemover);
     taskRemover.classList.toggle("taskRemover--hidden");
   };
 
   BtnFormRemove() {
     return (
-      <button className="btn btn--formRemove" onClick={() => this.resetTaskForm()}>
+      <button
+        className="btn btn--formRemove"
+        onClick={() => this.resetTaskForm()}
+      >
         <img className="btn__icon btn__icon--small" src={svgList.cross_icon} />
       </button>
     );
@@ -515,16 +524,14 @@ class TasksManager extends React.Component {
   }
 
   TaskDoneRemover() {
-        return (
-          <section className="taskRemover taskRemover--hidden">
-            <h2 className="taskRemover__header">
-              What would you like to delete this task?
-            </h2>
-            <div className="taskRemover__container">
-              {this.BtnRemove()}
-            </div>
-          </section>
-        );
+    return (
+      <section className="taskRemover taskRemover--hidden">
+        <h2 className="taskRemover__header">
+          What would you like to delete this task?
+        </h2>
+        <div className="taskRemover__container">{this.BtnRemove()}</div>
+      </section>
+    );
   }
 
   TaskHeader(item) {

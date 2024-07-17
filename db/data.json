@@ -27,9 +27,9 @@
     {
       "name": "New Task",
       "time": {
-        "start": 1721217620077,
+        "start": 1721219795927,
         "current": 0,
-        "total": 335
+        "total": 489
       },
       "isRunning": false,
       "isDone": false,
@@ -39,9 +39,9 @@
     {
       "name": "New Task",
       "time": {
-        "start": 1721217244232,
+        "start": 1721219424898,
         "current": 0,
-        "total": 0
+        "total": 132
       },
       "isRunning": false,
       "isDone": false,

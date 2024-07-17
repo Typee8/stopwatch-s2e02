@@ -81,14 +81,19 @@ class TasksManager extends React.Component {
     const data = await this.serverAPI.fetchData();
     this.setState({ tasks: data });
 
-        window.addEventListener("beforeunload", (evt) => {
-          evt.preventDefault();
-          alert("Are you sure you want to leave?");
-        });
+    viewportAdjust();
+
+    this.informUserOfRunningTask();
   }
 
-  componentDidUpdate() {
-    viewportAdjust();
+  informUserOfRunningTask() {
+    window.addEventListener("beforeunload", (evt) => {
+      const { tasks } = this.state;
+      if (tasks.some((item) => item.isRunning === true)) {
+        evt.preventDefault();
+        evt.returnValue = true;
+      }
+    });
   }
 
   renderTask() {

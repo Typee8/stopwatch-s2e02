@@ -75,6 +75,7 @@ class TasksManager extends React.Component {
     const data = await serverAPI.fetchData();
     this.setState({ tasks: data });
     this.resetTaskForm();
+    this.scrolltoTheBeginning();
   }
 
   async componentDidMount() {
@@ -98,8 +99,9 @@ class TasksManager extends React.Component {
 
   renderTask() {
     const { tasks } = this.state;
+    const tasksCopy = this.createDeepCopy(tasks);
 
-    return tasks.map((item) => {
+    return tasksCopy.reverse().map((item) => {
       if (item.isRemoved || item.isDone) {
         return;
       }
@@ -110,19 +112,14 @@ class TasksManager extends React.Component {
 
   renderTaskDone() {
     const { tasks } = this.state;
+    const tasksCopy = this.createDeepCopy(tasks);
 
-    return tasks.map((item) => {
+    return tasksCopy.reverse().map((item) => {
       if (item.isRemoved || !item.isDone) {
         return;
       }
 
-      return (
-        <section id={item.id} className="task task--done">
-          {this.BtnTaskRemover()}
-          {this.TaskDoneRemover()}
-          {this.TaskDoneHeader(item)}
-        </section>
-      );
+      return <>{this.TaskDoneTemplate(item)}</>;
     });
   }
 
@@ -131,6 +128,13 @@ class TasksManager extends React.Component {
     const taskNameCopy = this.createDeepCopy(taskName);
     taskNameCopy.input = "";
     this.setState({ isTaskFormShown: false, taskName: taskNameCopy });
+  }
+
+  scrolltoTheBeginning() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }
 
   displayTaskForm() {
@@ -215,7 +219,7 @@ class TasksManager extends React.Component {
 
     const { current, total } = currentTask[0].time;
     const time = current + total;
-    const [seconds, minutes, hours] = this.parseTimeForDisplay(time);
+    const {seconds, minutes, hours} = this.parseTimeForDisplay(time);
 
     let timeDisplay;
 
@@ -244,11 +248,11 @@ class TasksManager extends React.Component {
       hours = parseInt(timeInSeconds / 60 ** 2);
     }
 
-    [seconds, minutes, hours] = [seconds, minutes, hours].map((item) =>
+    [seconds, minutes] = [seconds, minutes].map((item) =>
       item.toString().padStart(2, "0")
     );
 
-    return [seconds, minutes, hours];
+    return {seconds, minutes, hours};
   }
 
   timerStartCount(taskID) {
@@ -532,7 +536,7 @@ class TasksManager extends React.Component {
     return (
       <section className="taskRemover taskRemover--hidden">
         <h2 className="taskRemover__header">
-          What would you like to delete this task?
+          Would you like to delete this task?
         </h2>
         <div className="taskRemover__container">{this.BtnRemove()}</div>
       </section>
@@ -568,6 +572,16 @@ class TasksManager extends React.Component {
         {this.TaskFooter(item)}
       </section>
     );
+  }
+
+  TaskDoneTemplate(item) {
+      return (
+        <section id={item.id} className="task task--done">
+          {this.BtnTaskRemover()}
+          {this.TaskDoneRemover()}
+          {this.TaskDoneHeader(item)}
+        </section>
+      );
   }
 
   render() {

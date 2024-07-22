@@ -183,7 +183,6 @@ class TasksManager extends React.Component {
           <section className="newTask">
             <div className="newTask__container">{this.TaskForm()}</div>
           </section>
-          <section className="addTask">{this.BtnAdd()}</section>
         </>
       );
     } else {
